@@ -10,10 +10,12 @@ import android.widget.Button;
 import android.widget.GridLayout;
 import android.widget.Toast;
 
+import com.ag.tictactoe.model.GameBoard;
+
 import java.util.List;
 
 /**
- * Runs a Tic Tac Toe game against an AI.
+ * Runs a Tic Tac Toe game against a person or AI.
  */
 public class MainActivity extends AppCompatActivity {
 
@@ -21,6 +23,11 @@ public class MainActivity extends AppCompatActivity {
      * Tag for logging messages.
      */
     private static final String TAG = MainActivity.class.getName();
+
+    /**
+     * Reference to the GameBoard.
+     */
+    private GameBoard gameBoard;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -31,16 +38,19 @@ public class MainActivity extends AppCompatActivity {
     }
 
     /**
-     * Set up button listeners for the tiles.
+     * Set up button listeners for the buttons.
      */
     private void setUpTiles() {
 
         // Retrieve all the buttons inside the grid layout.
-        List<View> allTiles = ((GridLayout) findViewById(R.id.tiles)).getTouchables();
+        List<View> buttons = ((GridLayout) findViewById(R.id.tiles)).getTouchables();
+
+        // Initializes a GameBoard.
+        gameBoard = new GameBoard(buttons);
 
         // Iterate through all the views and assign a click listener.
-        for (View tile : allTiles) {
-            tile.setOnClickListener((new View.OnClickListener() {
+        for (View button : buttons) {
+            button.setOnClickListener((new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     setUpClickListenerForTile((Button) v);
