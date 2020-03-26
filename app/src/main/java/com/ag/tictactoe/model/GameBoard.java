@@ -101,5 +101,18 @@ public class GameBoard {
         }
     }
 
+    /**
+     * Determines if a player has won the game.
+     *
+     * @return
+     */
+    public boolean getWinCondition() {
+
+        // TODO implement
+
+        return false;
+    }
+
+
 
 }

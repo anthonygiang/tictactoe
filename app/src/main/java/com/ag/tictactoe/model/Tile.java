@@ -6,35 +6,37 @@ package com.ag.tictactoe.model;
 public class Tile {
 
     /**
-     * Indicates different players.
+     * Denotes which GamePiece occupies this Tile.
      */
-    public enum PLAYER {
-        ONE, TWO
-    }
-
-    /**
-     * Denotes which player occupies this Tile.
-     */
-    private PLAYER player;
+    private GamePiece gamePiece;
 
     /**
      * Default constructor initializes player to null.
      */
     public Tile() {
-        player = null;
+        gamePiece = null;
     }
 
     /**
-     * Returns true if this Tile is occupied.
+     * Returns true if this Tile is occupied by a GamePiece.
      *
      * @return
      */
     public boolean getIsOccupied() {
-        if (player != null) {
+        if (gamePiece != null) {
             return true;
         } else {
             return false;
         }
+    }
+
+    /**
+     * Set a GamePiece onto this Tile.
+     *
+     * @param gp
+     */
+    public void setGamePiece(GamePiece gp) {
+        gamePiece = gp;
     }
 
 }
