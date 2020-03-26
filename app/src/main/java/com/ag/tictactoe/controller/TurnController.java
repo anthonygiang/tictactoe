@@ -4,7 +4,6 @@ import android.util.Log;
 
 import com.ag.tictactoe.model.Player;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -18,11 +17,6 @@ public class TurnController {
     private static final String TAG = TurnController.class.getName();
 
     /**
-     * List of all the players in the game.
-     */
-    private List<Player> players;
-
-    /**
      * Determine which player's turn it is.
      */
     private int turn;
@@ -32,17 +26,7 @@ public class TurnController {
      * sets the first player in the list to go first.
      */
     public TurnController() {
-        players = new ArrayList<Player>();
         turn = 0;
-    }
-
-    /**
-     * Adds a player to the game.
-     *
-     * @param player
-     */
-    public void addPlayer(Player player) {
-        players.add(player);
     }
 
     /**
@@ -50,7 +34,7 @@ public class TurnController {
      *
      * @return
      */
-    public Player getPlayerTurn() {
+    public Player getPlayerTurn(List<Player> players) {
         if (turn < players.size()) {
             return players.get(turn);
         } else {
@@ -62,7 +46,7 @@ public class TurnController {
     /**
      * Move the turn to the next player on the list.
      */
-    public void changeTurn() {
+    public void changeTurn(List<Player> players) {
         if (turn < players.size() - 1) {
             turn++;
         } else {

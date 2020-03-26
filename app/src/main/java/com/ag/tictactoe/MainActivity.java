@@ -8,6 +8,9 @@ import android.view.View;
 import android.widget.GridLayout;
 import android.widget.ImageButton;
 
+import com.ag.tictactoe.controller.GameBoardController;
+import com.ag.tictactoe.controller.GameController;
+import com.ag.tictactoe.controller.PlayerController;
 import com.ag.tictactoe.controller.TurnController;
 import com.ag.tictactoe.model.CirclePiece;
 import com.ag.tictactoe.model.CrossPiece;
@@ -15,6 +18,7 @@ import com.ag.tictactoe.model.GameBoard;
 import com.ag.tictactoe.model.Player;
 import com.ag.tictactoe.model.Tile;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -28,14 +32,24 @@ public class MainActivity extends AppCompatActivity {
     private static final String TAG = MainActivity.class.getName();
 
     /**
-     * Reference to the GameBoard.
+     * GameController manages the game.
      */
-    private GameBoard gameBoard;
+    private GameController gameController;
 
     /**
-     * Manages which player gets to move next.
+     * PlayerController manages the player.
+     */
+    private PlayerController playerController;
+
+    /**
+     * TurnController manages which player gets to move next.
      */
     private TurnController turnController;
+
+    /**
+     * GameBoardController manages the GameBoard.
+     */
+    private GameBoardController gameBoardController;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,8 +60,11 @@ public class MainActivity extends AppCompatActivity {
         Player playerOne = new Player(new CrossPiece());
         Player playerTwo = new Player(new CirclePiece());
 
-        turnController.addPlayer(playerOne);
-        turnController.addPlayer(playerTwo);
+        List<Player> players = new ArrayList<>();
+        players.add(playerOne);
+        players.add(playerTwo);
+
+        playerController = new PlayerController(players);
 
         setUpTiles();
     }
@@ -61,7 +78,10 @@ public class MainActivity extends AppCompatActivity {
         List<View> buttons = ((GridLayout) findViewById(R.id.tiles)).getTouchables();
 
         // Initializes a GameBoard.
-        gameBoard = new GameBoard(buttons);
+        GameBoard gameBoard = new GameBoard(buttons);
+        gameBoardController = new GameBoardController(gameBoard);
+
+        gameController = new GameController(playerController, turnController, gameBoardController);
 
         // Iterate through all the views and assign a click listener.
         for (View button : buttons) {
@@ -82,7 +102,7 @@ public class MainActivity extends AppCompatActivity {
     private void setUpClickListenerForTile(ImageButton button) {
 
         // Retrieves the Tile referenced by this button.
-        Tile tile = gameBoard.getTileFromId(button.getId());
+        Tile tile = gameBoardController.getTileFromId(button.getId());
         if(tile != null) {
 
             // Check if the Tile is already occupied and prompt player to select again.
@@ -93,7 +113,7 @@ public class MainActivity extends AppCompatActivity {
             // Place player's game piece on the Tile.
             else {
                 // Determine which player gets to move next.
-                Player player = turnController.getPlayerTurn();
+                Player player = turnController.getPlayerTurn(playerController.getPlayers());
 
                 if(player != null) {
 
@@ -102,13 +122,13 @@ public class MainActivity extends AppCompatActivity {
                     button.setImageResource(player.getGamePiece().getDrawable());
 
                     // Check if a player has won the game.
-                    if(gameBoard.getWinCondition() == true) {
+                    if(gameController.getWinCondition() == true) {
                         // TODO Handle win condition.
 
                     }
 
                     // Move to the next player's turn.
-                    turnController.changeTurn();
+                    turnController.changeTurn(playerController.getPlayers());
                 }
                 else {
                     Log.e(TAG, "Unable to find player.");

@@ -86,33 +86,12 @@ public class GameBoard {
     }
 
     /**
-     * Retrieves the Tile using the Button Id.
-     *
-     * @param id
-     * @return
-     */
-    public Tile getTileFromId(int id) {
-        if (boardHashMap.containsKey(id)) {
-            return boardHashMap.get(id);
-        }
-        else {
-            Log.e(TAG, "Unable to retrieve Tile from id.");
-            return null;
-        }
-    }
-
-    /**
-     * Determines if a player has won the game.
+     * Returns the HashMap that links a button resource to a Tile.
      *
      * @return
      */
-    public boolean getWinCondition() {
-
-        // TODO implement
-
-        return false;
+    public HashMap<Integer, Tile> getBoardHashMap() {
+        return boardHashMap;
     }
-
-
 
 }
