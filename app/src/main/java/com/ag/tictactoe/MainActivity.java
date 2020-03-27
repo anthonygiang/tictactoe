@@ -131,7 +131,7 @@ public class MainActivity extends AppCompatActivity {
             button.setOnClickListener((new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    setUpClickListenerForTile((ImageButton) v);
+                    checkTileClick((ImageButton) v);
                 }
             }));
         }
@@ -153,7 +153,7 @@ public class MainActivity extends AppCompatActivity {
      *
      * @param button
      */
-    private void setUpClickListenerForTile(ImageButton button) {
+    private void checkTileClick(ImageButton button) {
 
         // Retrieves the Tile referenced by this button.
         Tile tile = gameBoardController.getTileFromId(button.getId());
