@@ -1,7 +1,5 @@
 package com.ag.tictactoe;
 
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.content.Context;
 import android.os.Bundle;
 import android.util.Log;
@@ -10,18 +8,16 @@ import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.Toast;
 
+import androidx.appcompat.app.AppCompatActivity;
+
 import com.ag.tictactoe.controller.GameBoardController;
 import com.ag.tictactoe.controller.GameController;
 import com.ag.tictactoe.controller.PlayerController;
 import com.ag.tictactoe.controller.TurnController;
-import com.ag.tictactoe.model.CirclePiece;
-import com.ag.tictactoe.model.CrossPiece;
-import com.ag.tictactoe.model.GameBoard;
 import com.ag.tictactoe.model.Player;
 import com.ag.tictactoe.model.Tile;
 import com.ag.tictactoe.view.GameView;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -40,21 +36,6 @@ public class MainActivity extends AppCompatActivity {
     private GameController gameController;
 
     /**
-     * PlayerController manages the player.
-     */
-    private PlayerController playerController;
-
-    /**
-     * TurnController manages which player gets to move next.
-     */
-    private TurnController turnController;
-
-    /**
-     * GameBoardController manages the GameBoard.
-     */
-    private GameBoardController gameBoardController;
-
-    /**
      * GameView manages the View for the game.
      */
     private GameView gameView;
@@ -65,8 +46,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         initializeView();
-        initializeControllers();
-        setUpTiles();
+        initializeGame();
         setUpRestart();
     }
 
@@ -91,8 +71,7 @@ public class MainActivity extends AppCompatActivity {
         button.setOnClickListener((new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                initializeControllers();
-                setUpTiles();
+                initializeGame();
             }
         }));
     }
@@ -100,22 +79,9 @@ public class MainActivity extends AppCompatActivity {
     /**
      * Initializes the controller classes for this game.
      */
-    private void initializeControllers() {
-        turnController = new TurnController();
-        Player playerOne = new Player(new CrossPiece());
-        Player playerTwo = new Player(new CirclePiece());
-
-        List<Player> players = new ArrayList<>();
-        players.add(playerOne);
-        players.add(playerTwo);
-
-        playerController = new PlayerController(players);
-
-        // Initializes a GameBoard.
-        GameBoard gameBoard = new GameBoard(gameView.getTiles());
-        gameBoardController = new GameBoardController(gameBoard);
-
-        gameController = new GameController(playerController, turnController, gameBoardController);
+    private void initializeGame() {
+        gameController = new GameController(gameView);
+        setUpTiles();
     }
 
     /**
@@ -155,12 +121,16 @@ public class MainActivity extends AppCompatActivity {
      */
     private void checkTileClick(ImageButton button) {
 
+        PlayerController playerController = gameController.getPlayerController();
+        TurnController turnController = gameController.getTurnController();
+        GameBoardController gameBoardController = gameController.getGameBoardController();
+
         // Retrieves the Tile referenced by this button.
         Tile tile = gameBoardController.getTileFromId(button.getId());
-        if(tile != null) {
+        if (tile != null) {
 
             // Check if the Tile is already occupied and prompt player to select again.
-            if(tile.getIsOccupied()) {
+            if (tile.getIsOccupied()) {
                 Context context = getApplicationContext();
                 String toastText = "Select another tile.";
                 int duration = Toast.LENGTH_SHORT;
@@ -173,14 +143,14 @@ public class MainActivity extends AppCompatActivity {
                 // Determine which player gets to move next.
                 Player player = turnController.getPlayerTurn(playerController.getPlayers());
 
-                if(player != null) {
+                if (player != null) {
 
                     // Sets the player's game piece on this tile and sets the image.
                     tile.setGamePiece(player.getGamePiece());
                     button.setImageResource(player.getGamePiece().getDrawable());
 
                     // Check if a player has won the game.
-                    if(gameController.getWinCondition() == true) {
+                    if (gameController.getWinCondition() == true) {
                         Context context = getApplicationContext();
                         String toastText = "Win!";
                         int duration = Toast.LENGTH_SHORT;
@@ -189,18 +159,15 @@ public class MainActivity extends AppCompatActivity {
                         toast.show();
 
                         disallowClickForTiles();
-                    }
-                    else {
+                    } else {
                         // Move to the next player's turn.
                         turnController.changeTurn(playerController.getPlayers());
                     }
-                }
-                else {
+                } else {
                     Log.e(TAG, "Unable to find player.");
                 }
             }
-        }
-        else {
+        } else {
             Log.e(TAG, "Unable to find tile.");
         }
     }

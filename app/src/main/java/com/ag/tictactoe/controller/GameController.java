@@ -1,14 +1,25 @@
 package com.ag.tictactoe.controller;
 
+import com.ag.tictactoe.model.CirclePiece;
+import com.ag.tictactoe.model.CrossPiece;
 import com.ag.tictactoe.model.GameBoard;
 import com.ag.tictactoe.model.GamePiece;
 import com.ag.tictactoe.model.Player;
 import com.ag.tictactoe.model.Tile;
+import com.ag.tictactoe.view.GameView;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Class manages the game.
  */
 public class GameController {
+
+    /**
+     * GameView manages the View for the game.
+     */
+    private GameView gameView;
 
     /**
      * PlayerController will manage the Player.
@@ -26,16 +37,34 @@ public class GameController {
     private GameBoardController gameBoardController;
 
     /**
-     * Constructor sets the PlayerController, TurnController, and GameBoardController.
+     * Constructor takes in a GameView
      *
-     * @param pc
-     * @param tc
-     * @param gbc
+     * @param gv
      */
-    public GameController(PlayerController pc, TurnController tc, GameBoardController gbc) {
-        playerController = pc;
-        turnController = tc;
-        gameBoardController = gbc;
+    public GameController(GameView gv) {
+        gameView = gv;
+
+        initializeControllers();
+    }
+
+    /**
+     * Initializes the controller classes for this game.
+     */
+    private void initializeControllers() {
+
+        turnController = new TurnController();
+        Player playerOne = new Player(new CrossPiece());
+        Player playerTwo = new Player(new CirclePiece());
+
+        List<Player> players = new ArrayList<>();
+        players.add(playerOne);
+        players.add(playerTwo);
+
+        playerController = new PlayerController(players);
+
+        // Initializes a GameBoard.
+        GameBoard gameBoard = new GameBoard(gameView.getTiles());
+        gameBoardController = new GameBoardController(gameBoard);
     }
 
     /**
