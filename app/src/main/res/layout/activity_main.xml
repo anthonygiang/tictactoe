@@ -17,7 +17,6 @@
     <Button
         android:layout_width="100dp"
         android:layout_height="50dp"
-        android:layout_columnWeight="1"
         android:gravity="center"
         android:layout_gravity="fill_horizontal"
         android:id="@+id/restart"
@@ -28,8 +27,8 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <GridLayout
-        android:layout_width="300dp"
-        android:layout_height="300dp"
+        android:layout_width="312dp"
+        android:layout_height="312dp"
         android:columnCount="3"
         android:id="@+id/tiles"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -38,91 +37,73 @@
         app:layout_constraintTop_toTopOf="parent">
 
         <ImageButton
-            android:layout_width="0dp"
+            android:layout_width="100dp"
             android:layout_height="100dp"
-            android:layout_columnWeight="1"
-            android:gravity="center"
-            android:layout_gravity="fill_horizontal"
+            android:layout_margin="2dp"
             android:background="@android:color/darker_gray"
             android:id="@+id/tile1"
             android:text="Tile1" />
 
         <ImageButton
-            android:layout_width="0dp"
+            android:layout_width="100dp"
             android:layout_height="100dp"
-            android:layout_columnWeight="1"
-            android:gravity="center"
-            android:layout_gravity="fill_horizontal"
+            android:layout_margin="2dp"
             android:background="@android:color/darker_gray"
             android:id="@+id/tile2"
             android:text="Tile2" />
 
         <ImageButton
-            android:layout_width="0dp"
+            android:layout_width="100dp"
             android:layout_height="100dp"
-            android:layout_columnWeight="1"
-            android:gravity="center"
-            android:layout_gravity="fill_horizontal"
+            android:layout_margin="2dp"
             android:background="@android:color/darker_gray"
             android:id="@+id/tile3"
             android:text="Tile3" />
 
         <ImageButton
-            android:layout_width="0dp"
+            android:layout_width="100dp"
             android:layout_height="100dp"
-            android:layout_columnWeight="1"
-            android:gravity="center"
-            android:layout_gravity="fill_horizontal"
+            android:layout_margin="2dp"
             android:background="@android:color/darker_gray"
             android:id="@+id/tile4"
             android:text="Tile4" />
 
         <ImageButton
-            android:layout_width="0dp"
+            android:layout_width="100dp"
             android:layout_height="100dp"
-            android:layout_columnWeight="1"
-            android:gravity="center"
-            android:layout_gravity="fill_horizontal"
+            android:layout_margin="2dp"
             android:background="@android:color/darker_gray"
             android:id="@+id/tile5"
             android:text="Tile5" />
 
         <ImageButton
-            android:layout_width="0dp"
+            android:layout_width="100dp"
             android:layout_height="100dp"
-            android:layout_columnWeight="1"
-            android:gravity="center"
-            android:layout_gravity="fill_horizontal"
+            android:layout_margin="2dp"
             android:background="@android:color/darker_gray"
             android:id="@+id/tile6"
             android:text="Tile6" />
 
         <ImageButton
-            android:layout_width="0dp"
+            android:layout_width="100dp"
             android:layout_height="100dp"
-            android:layout_columnWeight="1"
-            android:gravity="center"
-            android:layout_gravity="fill_horizontal"
+            android:layout_margin="2dp"
             android:background="@android:color/darker_gray"
             android:id="@+id/tile7"
             android:text="Tile7" />
 
         <ImageButton
-            android:layout_width="0dp"
+            android:layout_width="100dp"
             android:layout_height="100dp"
-            android:layout_columnWeight="1"
-            android:gravity="center"
-            android:layout_gravity="fill_horizontal"
+            android:layout_margin="2dp"
             android:background="@android:color/darker_gray"
             android:id="@+id/tile8"
             android:text="Tile8" />
 
         <ImageButton
-            android:layout_width="0dp"
+            android:layout_width="100dp"
             android:layout_height="100dp"
-            android:layout_columnWeight="1"
-            android:gravity="center"
-            android:layout_gravity="fill_horizontal"
+            android:layout_margin="2dp"
             android:background="@android:color/darker_gray"
             android:id="@+id/tile9"
             android:text="Tile9" />
