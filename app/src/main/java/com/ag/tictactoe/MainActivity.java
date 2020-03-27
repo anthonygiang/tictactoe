@@ -2,11 +2,13 @@ package com.ag.tictactoe;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.GridLayout;
 import android.widget.ImageButton;
+import android.widget.Toast;
 
 import com.ag.tictactoe.controller.GameBoardController;
 import com.ag.tictactoe.controller.GameController;
@@ -107,8 +109,12 @@ public class MainActivity extends AppCompatActivity {
 
             // Check if the Tile is already occupied and prompt player to select again.
             if(tile.getIsOccupied()) {
-                // TODO Message user to select another tile.
+                Context context = getApplicationContext();
+                String toastText = "Select another tile.";
+                int duration = Toast.LENGTH_SHORT;
 
+                Toast toast = Toast.makeText(context, toastText, duration);
+                toast.show();
             }
             // Place player's game piece on the Tile.
             else {
@@ -123,12 +129,20 @@ public class MainActivity extends AppCompatActivity {
 
                     // Check if a player has won the game.
                     if(gameController.getWinCondition() == true) {
-                        // TODO Handle win condition.
+                        Context context = getApplicationContext();
+                        String toastText = "Win!";
+                        int duration = Toast.LENGTH_SHORT;
+
+                        Toast toast = Toast.makeText(context, toastText, duration);
+                        toast.show();
+
+                        // TODO End the game.
 
                     }
-
-                    // Move to the next player's turn.
-                    turnController.changeTurn(playerController.getPlayers());
+                    else {
+                        // Move to the next player's turn.
+                        turnController.changeTurn(playerController.getPlayers());
+                    }
                 }
                 else {
                     Log.e(TAG, "Unable to find player.");
