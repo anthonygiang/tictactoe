@@ -77,7 +77,7 @@ public class MainActivity extends AppCompatActivity {
     private void setUpTiles() {
 
         // Retrieve all the buttons inside the grid layout.
-        List<View> buttons = ((GridLayout) findViewById(R.id.tiles)).getTouchables();
+        List<View> buttons = findViewById(R.id.tiles).getTouchables();
 
         // Initializes a GameBoard.
         GameBoard gameBoard = new GameBoard(buttons);
@@ -93,6 +93,20 @@ public class MainActivity extends AppCompatActivity {
                     setUpClickListenerForTile((ImageButton) v);
                 }
             }));
+        }
+    }
+
+    /**
+     * Disable clicking on the Tiles.
+     */
+    private void disallowClickForTiles() {
+
+        // Retrieve all the buttons inside the grid layout.
+        List<View> buttons = findViewById(R.id.tiles).getTouchables();
+
+        // Iterate through all the views and assign a click listener.
+        for (View button : buttons) {
+            button.setClickable(false);
         }
     }
 
@@ -136,8 +150,7 @@ public class MainActivity extends AppCompatActivity {
                         Toast toast = Toast.makeText(context, toastText, duration);
                         toast.show();
 
-                        // TODO End the game.
-
+                        disallowClickForTiles();
                     }
                     else {
                         // Move to the next player's turn.
