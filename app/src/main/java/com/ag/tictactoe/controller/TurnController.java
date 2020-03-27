@@ -30,7 +30,7 @@ public class TurnController {
     }
 
     /**
-     * Returns the Player whose turn is next.
+     * Returns the Player who has the current turn.
      *
      * @return
      */
