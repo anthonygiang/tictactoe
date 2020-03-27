@@ -39,4 +39,11 @@ public class Tile {
         gamePiece = gp;
     }
 
+    /**
+     * Returns the GamePiece that is on this Tile.
+     */
+    public GamePiece getGamePiece() {
+        return gamePiece;
+    }
+
 }
