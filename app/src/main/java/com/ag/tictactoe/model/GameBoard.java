@@ -20,12 +20,12 @@ public class GameBoard {
     /**
      * Constant for the number of rows for this board.
      */
-    private static final int NUMBER_OF_TILE_ROWS = 3;
+    public static final int NUMBER_OF_TILE_ROWS = 3;
 
     /**
      * Constant for the number of columns for this board.
      */
-    private static final int NUMBER_OF_TILE_COLS = 3;
+    public static final int NUMBER_OF_TILE_COLS = 3;
 
     /**
      * 2D array for the Tile board.

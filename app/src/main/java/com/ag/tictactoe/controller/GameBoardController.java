@@ -59,4 +59,24 @@ public class GameBoardController {
         }
     }
 
+    /**
+     * Returns true if the game is a tie.
+     *
+     * @return
+     */
+    public boolean getStalemateCondition() {
+
+        Tile[][] map = gameBoard.getTileMap();
+
+        for (int i = 0; i < gameBoard.NUMBER_OF_TILE_ROWS; i++) {
+            for (int j = 0; j < gameBoard.NUMBER_OF_TILE_COLS; j++) {
+                if(!map[i][j].getIsOccupied()) {
+                    return false;
+                }
+            }
+        }
+
+        return true;
+    }
+
 }

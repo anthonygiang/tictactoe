@@ -159,6 +159,17 @@ public class MainActivity extends AppCompatActivity {
                         toast.show();
 
                         disallowClickForTiles();
+                    }
+                    // Check if the game resulted in a tie.
+                    else if (gameBoardController.getStalemateCondition()) {
+                        Context context = getApplicationContext();
+                        String toastText = "Stalemate!";
+                        int duration = Toast.LENGTH_SHORT;
+
+                        Toast toast = Toast.makeText(context, toastText, duration);
+                        toast.show();
+
+                        disallowClickForTiles();
                     } else {
                         // Move to the next player's turn.
                         turnController.changeTurn(playerController.getPlayers());
