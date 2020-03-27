@@ -150,7 +150,7 @@ public class MainActivity extends AppCompatActivity {
                     button.setImageResource(player.getGamePiece().getDrawable());
 
                     // Check if a player has won the game.
-                    if (gameController.getWinCondition() == true) {
+                    if (gameBoardController.getWinConditionForPlayer(player) == true) {
                         Context context = getApplicationContext();
                         String toastText = "Win!";
                         int duration = Toast.LENGTH_SHORT;
