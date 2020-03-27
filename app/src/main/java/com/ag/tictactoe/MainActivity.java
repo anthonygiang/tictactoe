@@ -35,43 +35,39 @@ public class MainActivity extends AppCompatActivity {
      */
     private GameController gameController;
 
-    /**
-     * GameView manages the View for the game.
-     */
-    private GameView gameView;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        initializeView();
-        initializeGame();
-        setUpRestart();
+        GameView gameView = initializeView();
+        initializeGame(gameView);
+        setUpRestart(gameView);
     }
 
     /**
      * Initializes the View for the game.
      */
-    private void initializeView() {
+    private GameView initializeView() {
         // Retrieve all the buttons inside the grid layout.
         List<View> buttons = findViewById(R.id.tiles).getTouchables();
         Button button = findViewById(R.id.restart);
 
-        gameView = new GameView();
+        GameView gameView = new GameView(getApplicationContext());
         gameView.setTiles(buttons);
         gameView.setRestart(button);
+        return gameView;
     }
 
     /**
      * Sets up the Restart button.
      */
-    private void setUpRestart() {
+    private void setUpRestart(final GameView gameView) {
         Button button = (Button) gameView.getRestart();
         button.setOnClickListener((new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                initializeGame();
+                initializeGame(gameView);
             }
         }));
     }
@@ -79,15 +75,15 @@ public class MainActivity extends AppCompatActivity {
     /**
      * Initializes the controller classes for this game.
      */
-    private void initializeGame() {
+    private void initializeGame(GameView gameView) {
         gameController = new GameController(gameView);
-        setUpTiles();
+        setUpTiles(gameView);
     }
 
     /**
      * Set up button listeners for the buttons.
      */
-    private void setUpTiles() {
+    private void setUpTiles(GameView gameView) {
 
         // Iterate through all the views and assign a click listener.
         for (View button : gameView.getTiles()) {
@@ -106,7 +102,7 @@ public class MainActivity extends AppCompatActivity {
     /**
      * Disable clicking on the Tiles.
      */
-    private void disallowClickForTiles() {
+    private void disallowClickForTiles(GameView gameView) {
 
         // Iterate through all the views and assign a click listener.
         for (View button : gameView.getTiles()) {
@@ -121,6 +117,7 @@ public class MainActivity extends AppCompatActivity {
      */
     private void checkTileClick(ImageButton button) {
 
+        GameView gameView = gameController.getGameView();
         PlayerController playerController = gameController.getPlayerController();
         TurnController turnController = gameController.getTurnController();
         GameBoardController gameBoardController = gameController.getGameBoardController();
@@ -131,7 +128,7 @@ public class MainActivity extends AppCompatActivity {
 
             // Check if the Tile is already occupied and prompt player to select again.
             if (tile.getIsOccupied()) {
-                Context context = getApplicationContext();
+                Context context = gameView.getContext();
                 String toastText = "Select another tile.";
                 int duration = Toast.LENGTH_SHORT;
 
@@ -151,14 +148,14 @@ public class MainActivity extends AppCompatActivity {
 
                     // Check if a player has won the game.
                     if (gameBoardController.getWinConditionForPlayer(player) == true) {
-                        Context context = getApplicationContext();
+                        Context context = gameView.getContext();
                         String toastText = "Win!";
                         int duration = Toast.LENGTH_SHORT;
 
                         Toast toast = Toast.makeText(context, toastText, duration);
                         toast.show();
 
-                        disallowClickForTiles();
+                        disallowClickForTiles(gameView);
                     }
                     // Check if the game resulted in a tie.
                     else if (gameBoardController.getStalemateCondition()) {
@@ -169,7 +166,7 @@ public class MainActivity extends AppCompatActivity {
                         Toast toast = Toast.makeText(context, toastText, duration);
                         toast.show();
 
-                        disallowClickForTiles();
+                        disallowClickForTiles(gameView);
                     } else {
                         // Move to the next player's turn.
                         turnController.changeTurn(playerController.getPlayers());

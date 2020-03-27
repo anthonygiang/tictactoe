@@ -1,5 +1,6 @@
 package com.ag.tictactoe.view;
 
+import android.content.Context;
 import android.view.View;
 
 import java.util.List;
@@ -18,6 +19,19 @@ public class GameView {
      * View for restarting the game.
      */
     private View restart;
+
+    /**
+     * Context for the application.
+     */
+    private Context context;
+
+    /**
+     * Constructor takes in the Context from the application.
+     * @param c
+     */
+    public GameView(Context c) {
+        context = c;
+    }
 
     /**
      * Set the tiles in the game.
@@ -49,6 +63,15 @@ public class GameView {
      */
     public View getRestart() {
         return restart;
+    }
+
+    /**
+     * Returns the context for the application.
+     *
+     * @return
+     */
+    public Context getContext() {
+        return context;
     }
 
 }

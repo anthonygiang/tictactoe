@@ -92,4 +92,13 @@ public class GameController {
         return gameBoardController;
     }
 
+    /**
+     * Returns the {@link GameView}.
+     *
+     * @return
+     */
+    public GameView getGameView() {
+        return gameView;
+    }
+
 }
