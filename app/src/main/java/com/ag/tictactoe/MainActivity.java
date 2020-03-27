@@ -6,7 +6,7 @@ import android.content.Context;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
-import android.widget.GridLayout;
+import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.Toast;
 
@@ -19,6 +19,7 @@ import com.ag.tictactoe.model.CrossPiece;
 import com.ag.tictactoe.model.GameBoard;
 import com.ag.tictactoe.model.Player;
 import com.ag.tictactoe.model.Tile;
+import com.ag.tictactoe.view.GameView;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -53,11 +54,53 @@ public class MainActivity extends AppCompatActivity {
      */
     private GameBoardController gameBoardController;
 
+    /**
+     * GameView manages the View for the game.
+     */
+    private GameView gameView;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        initializeView();
+        initializeControllers();
+        setUpTiles();
+        setUpRestart();
+    }
+
+    /**
+     * Initializes the View for the game.
+     */
+    private void initializeView() {
+        // Retrieve all the buttons inside the grid layout.
+        List<View> buttons = findViewById(R.id.tiles).getTouchables();
+        Button button = findViewById(R.id.restart);
+
+        gameView = new GameView();
+        gameView.setTiles(buttons);
+        gameView.setRestart(button);
+    }
+
+    /**
+     * Sets up the Restart button.
+     */
+    private void setUpRestart() {
+        Button button = (Button) gameView.getRestart();
+        button.setOnClickListener((new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                initializeControllers();
+                setUpTiles();
+            }
+        }));
+    }
+
+    /**
+     * Initializes the controller classes for this game.
+     */
+    private void initializeControllers() {
         turnController = new TurnController();
         Player playerOne = new Player(new CrossPiece());
         Player playerTwo = new Player(new CirclePiece());
@@ -68,7 +111,11 @@ public class MainActivity extends AppCompatActivity {
 
         playerController = new PlayerController(players);
 
-        setUpTiles();
+        // Initializes a GameBoard.
+        GameBoard gameBoard = new GameBoard(gameView.getTiles());
+        gameBoardController = new GameBoardController(gameBoard);
+
+        gameController = new GameController(playerController, turnController, gameBoardController);
     }
 
     /**
@@ -76,17 +123,11 @@ public class MainActivity extends AppCompatActivity {
      */
     private void setUpTiles() {
 
-        // Retrieve all the buttons inside the grid layout.
-        List<View> buttons = findViewById(R.id.tiles).getTouchables();
-
-        // Initializes a GameBoard.
-        GameBoard gameBoard = new GameBoard(buttons);
-        gameBoardController = new GameBoardController(gameBoard);
-
-        gameController = new GameController(playerController, turnController, gameBoardController);
-
         // Iterate through all the views and assign a click listener.
-        for (View button : buttons) {
+        for (View button : gameView.getTiles()) {
+            button.setClickable(true);
+            ImageButton imageButton = (ImageButton) button;
+            imageButton.setImageResource(android.R.color.transparent);
             button.setOnClickListener((new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -101,11 +142,8 @@ public class MainActivity extends AppCompatActivity {
      */
     private void disallowClickForTiles() {
 
-        // Retrieve all the buttons inside the grid layout.
-        List<View> buttons = findViewById(R.id.tiles).getTouchables();
-
         // Iterate through all the views and assign a click listener.
-        for (View button : buttons) {
+        for (View button : gameView.getTiles()) {
             button.setClickable(false);
         }
     }
