@@ -1,183 +1,24 @@
 package com.ag.tictactoe;
 
-import android.content.Context;
 import android.os.Bundle;
-import android.util.Log;
-import android.view.View;
-import android.widget.Button;
-import android.widget.ImageButton;
-import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.ag.tictactoe.controller.GameBoardController;
 import com.ag.tictactoe.controller.GameController;
-import com.ag.tictactoe.controller.PlayerController;
-import com.ag.tictactoe.controller.TurnController;
-import com.ag.tictactoe.model.Player;
-import com.ag.tictactoe.model.Tile;
 import com.ag.tictactoe.view.GameView;
-
-import java.util.List;
 
 /**
  * Runs a Tic Tac Toe game against a person or AI.
  */
 public class MainActivity extends AppCompatActivity {
 
-    /**
-     * Tag for logging messages.
-     */
-    private static final String TAG = MainActivity.class.getName();
-
-    /**
-     * GameController manages the game.
-     */
-    private GameController gameController;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        GameView gameView = initializeView();
-        initializeGame(gameView);
-        setUpRestart(gameView);
-    }
-
-    /**
-     * Initializes the View for the game.
-     */
-    private GameView initializeView() {
-        // Retrieve all the buttons inside the grid layout.
-        List<View> buttons = findViewById(R.id.tiles).getTouchables();
-        Button button = findViewById(R.id.restart);
-
-        GameView gameView = new GameView(getApplicationContext());
-        gameView.setTiles(buttons);
-        gameView.setRestart(button);
-        return gameView;
-    }
-
-    /**
-     * Sets up the Restart button.
-     */
-    private void setUpRestart(final GameView gameView) {
-        Button button = (Button) gameView.getRestart();
-        button.setOnClickListener((new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                initializeGame(gameView);
-            }
-        }));
-    }
-
-    /**
-     * Initializes the controller classes for this game.
-     */
-    private void initializeGame(GameView gameView) {
-        gameController = new GameController(gameView);
-        setUpTiles(gameView);
-    }
-
-    /**
-     * Set up button listeners for the buttons.
-     */
-    private void setUpTiles(GameView gameView) {
-
-        // Iterate through all the views and assign a click listener.
-        for (View button : gameView.getTiles()) {
-            button.setClickable(true);
-            ImageButton imageButton = (ImageButton) button;
-            imageButton.setImageResource(android.R.color.transparent);
-            button.setOnClickListener((new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    checkTileClick((ImageButton) v);
-                }
-            }));
-        }
-    }
-
-    /**
-     * Disable clicking on the Tiles.
-     */
-    private void disallowClickForTiles(GameView gameView) {
-
-        // Iterate through all the views and assign a click listener.
-        for (View button : gameView.getTiles()) {
-            button.setClickable(false);
-        }
-    }
-
-    /**
-     * Sets up an on click listener for this button.
-     *
-     * @param button
-     */
-    private void checkTileClick(ImageButton button) {
-
-        GameView gameView = gameController.getGameView();
-        PlayerController playerController = gameController.getPlayerController();
-        TurnController turnController = gameController.getTurnController();
-        GameBoardController gameBoardController = gameController.getGameBoardController();
-
-        // Retrieves the Tile referenced by this button.
-        Tile tile = gameBoardController.getTileFromId(button.getId());
-        if (tile != null) {
-
-            // Check if the Tile is already occupied and prompt player to select again.
-            if (tile.getIsOccupied()) {
-                Context context = gameView.getContext();
-                String toastText = "Select another tile.";
-                int duration = Toast.LENGTH_SHORT;
-
-                Toast toast = Toast.makeText(context, toastText, duration);
-                toast.show();
-            }
-            // Place player's game piece on the Tile.
-            else {
-                // Determine which player gets to move next.
-                Player player = turnController.getPlayerTurn(playerController.getPlayers());
-
-                if (player != null) {
-
-                    // Sets the player's game piece on this tile and sets the image.
-                    tile.setGamePiece(player.getGamePiece());
-                    button.setImageResource(player.getGamePiece().getDrawable());
-
-                    // Check if a player has won the game.
-                    if (gameBoardController.getWinConditionForPlayer(player) == true) {
-                        Context context = gameView.getContext();
-                        String toastText = "Win!";
-                        int duration = Toast.LENGTH_SHORT;
-
-                        Toast toast = Toast.makeText(context, toastText, duration);
-                        toast.show();
-
-                        disallowClickForTiles(gameView);
-                    }
-                    // Check if the game resulted in a tie.
-                    else if (gameBoardController.getStalemateCondition()) {
-                        Context context = getApplicationContext();
-                        String toastText = "Stalemate!";
-                        int duration = Toast.LENGTH_SHORT;
-
-                        Toast toast = Toast.makeText(context, toastText, duration);
-                        toast.show();
-
-                        disallowClickForTiles(gameView);
-                    } else {
-                        // Move to the next player's turn.
-                        turnController.changeTurn(playerController.getPlayers());
-                    }
-                } else {
-                    Log.e(TAG, "Unable to find player.");
-                }
-            }
-        } else {
-            Log.e(TAG, "Unable to find tile.");
-        }
+        GameView gameView = new GameView(this);
+        GameController gameController = new GameController(gameView);
     }
 
 }
