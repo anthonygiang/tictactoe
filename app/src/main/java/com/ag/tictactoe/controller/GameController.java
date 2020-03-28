@@ -7,6 +7,7 @@ import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.Toast;
 
+import com.ag.tictactoe.ai.GameTree;
 import com.ag.tictactoe.model.CirclePiece;
 import com.ag.tictactoe.model.CrossPiece;
 import com.ag.tictactoe.model.GameBoard;
@@ -93,7 +94,43 @@ public class GameController {
     private void startGameAgainstAI() {
         initializeGame();
         // TODO implement.
-        
+
+        // Need to add AI as a player.
+        // Make first move for now.
+        // Prompt user to ask who to go first.
+        // Need to add action to button listener, to make a move after the user has made a move.
+
+
+    }
+
+    /**
+     * Determine and make the AI move.
+     */
+    private void setAIMove() {
+
+        // Get current state of the board.
+        // Determine possible moves.
+        GameTree gameTree = new GameTree(this);
+        // Make move
+
+    }
+
+    /**
+     * Updates the Tile listeners to include a step to make the AI move
+     * after the user makes a move.
+     */
+    private void updateTileListener() {
+
+        // Iterate through all the views and assign a click listener.
+        for (View button : gameView.getTiles()) {
+            button.setOnClickListener((new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    checkTileClick((ImageButton) v);
+                    setAIMove();
+                }
+            }));
+        }
     }
 
     /**
