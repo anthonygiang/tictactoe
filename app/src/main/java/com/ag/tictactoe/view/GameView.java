@@ -1,7 +1,6 @@
 package com.ag.tictactoe.view;
 
 import android.view.View;
-import android.widget.Button;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -25,6 +24,11 @@ public class GameView {
     private View restart;
 
     /**
+     * Button to start game against AI.
+     */
+    private View aiButton;
+
+    /**
      * Context for the application.
      */
     private AppCompatActivity app;
@@ -38,20 +42,9 @@ public class GameView {
         app = a;
 
         // Retrieve all the buttons inside the grid layout.
-        List<View> buttons = app.findViewById(R.id.tiles).getTouchables();
-        Button button = app.findViewById(R.id.restart);
-
-        setTiles(buttons);
-        setRestart(button);
-    }
-
-    /**
-     * Set the tiles in the game.
-     *
-     * @param buttons
-     */
-    private void setTiles(List<View> buttons) {
-        tiles = buttons;
+        tiles = app.findViewById(R.id.tiles).getTouchables();
+        restart = app.findViewById(R.id.restart);
+        aiButton = app.findViewById(R.id.ai);
     }
 
     /**
@@ -64,21 +57,21 @@ public class GameView {
     }
 
     /**
-     * Sets the restart button in the game.
-     *
-     * @param button
-     */
-    private void setRestart(View button) {
-        restart = button;
-    }
-
-    /**
      * Returns the restart button in the game.
      *
      * @return
      */
     public View getRestart() {
         return restart;
+    }
+
+    /**
+     * Returns the AI button in the game.
+     *
+     * @return
+     */
+    public View getAIButton() {
+        return aiButton;
     }
 
     /**

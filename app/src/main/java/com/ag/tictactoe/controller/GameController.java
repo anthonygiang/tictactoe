@@ -56,6 +56,7 @@ public class GameController {
         gameView = gv;
         initializeGame();
         setUpRestart();
+        setUpAI();
     }
 
     /**
@@ -84,6 +85,28 @@ public class GameController {
         // Initializes a GameBoard.
         GameBoard gameBoard = new GameBoard(gameView.getTiles());
         gameBoardController = new GameBoardController(gameBoard);
+    }
+
+    /**
+     * Starts the game against AI.
+     */
+    private void startGameAgainstAI() {
+        initializeGame();
+        // TODO implement.
+        
+    }
+
+    /**
+     * Sets up the AI button.
+     */
+    private void setUpAI() {
+        Button button = (Button) gameView.getAIButton();
+        button.setOnClickListener((new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startGameAgainstAI();
+            }
+        }));
     }
 
     /**
