@@ -54,4 +54,21 @@ public class GameTreeNode extends TreeNode {
         return gameController;
     }
 
+    /**
+     * Sets whether this node resulted in a win.
+     * @param b
+     */
+    public void setWinNode(boolean b) {
+        win = b;
+    }
+
+    /**
+     * Sets whether this node resulted in a tie.
+     *
+     * @param b
+     */
+    public void setTieNode(boolean b) {
+        tie = b;
+    }
+
 }

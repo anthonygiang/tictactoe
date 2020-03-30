@@ -26,4 +26,15 @@ public abstract class TreeNode {
         children = new ArrayList<TreeNode>();
     }
 
+    /**
+     * Adds a child TreeNode to this current TreeNode.
+     * Sets the parent node of the child to this current TreeNode.
+     *
+     * @param n
+     */
+    public void addChildTreeNode(TreeNode n) {
+        n.parent = this;
+        children.add(n);
+    }
+
 }
