@@ -30,6 +30,15 @@ public class TurnController {
     }
 
     /**
+     * Constructor copies this class.
+     *
+     * @param tc
+     */
+    public TurnController(TurnController tc) {
+        turn = tc.turn;
+    }
+
+    /**
      * Returns the Player who has the current turn.
      *
      * @return
@@ -52,6 +61,7 @@ public class TurnController {
         } else {
             turn = 0;
         }
+        Log.i(TAG, "Next player's turn: " + this.getPlayerTurn(players).getName());
     }
 
 }

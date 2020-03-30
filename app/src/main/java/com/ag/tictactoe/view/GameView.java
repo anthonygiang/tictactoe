@@ -48,6 +48,16 @@ public class GameView {
     }
 
     /**
+     * Disable clicking on the Tiles.
+     */
+    public void disallowClickForTiles() {
+        // Iterate through all the buttons and make them not clickable.
+        for (View button : tiles) {
+            button.setClickable(false);
+        }
+    }
+
+    /**
      * Returns the list of tiles in the game.
      *
      * @return

@@ -1,9 +1,19 @@
 package com.ag.tictactoe.model;
 
+import android.content.Context;
+import android.util.Log;
+import android.widget.ImageButton;
+import android.widget.Toast;
+
 /**
  * Class represents information for a single Tile.
  */
 public class Tile {
+
+    /**
+     * Tag for logging messages.
+     */
+    private static final String TAG = Tile.class.getName();
 
     /**
      * Denotes which GamePiece occupies this Tile.
@@ -11,10 +21,41 @@ public class Tile {
     private GamePiece gamePiece;
 
     /**
+     * Button this Tile is mapped to.
+     */
+    private ImageButton button;
+
+    /**
      * Default constructor initializes player to null.
      */
     public Tile() {
         gamePiece = null;
+        button = null;
+    }
+
+    /**
+     * Sets the Button this Tile is associated with.
+     * @param b
+     */
+    public void setButton(ImageButton b) {
+        button = b;
+    }
+
+    /**
+     * Return the button associated with this Tile.
+     */
+    public ImageButton getButton() {
+        return button;
+    }
+
+    /**
+     * Constructor copies this class.
+     *
+     * @param t
+     */
+    public Tile(Tile t) {
+        gamePiece = t.gamePiece;
+        button = t.getButton();
     }
 
     /**
@@ -22,8 +63,12 @@ public class Tile {
      *
      * @return
      */
-    public boolean getIsOccupied() {
+    public boolean getIsOccupied(Context context) {
         if (gamePiece != null) {
+            String toastText = "Select another tile.";
+            int duration = Toast.LENGTH_SHORT;
+            Toast toast = Toast.makeText(context, toastText, duration);
+            toast.show();
             return true;
         } else {
             return false;
@@ -37,6 +82,7 @@ public class Tile {
      */
     public void setGamePiece(GamePiece gp) {
         gamePiece = gp;
+        Log.i(TAG, "Setting game piece - " + gp.toString() + " to Tile ");
     }
 
     /**

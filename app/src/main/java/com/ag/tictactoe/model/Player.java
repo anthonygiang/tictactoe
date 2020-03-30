@@ -6,6 +6,11 @@ package com.ag.tictactoe.model;
 public class Player {
 
     /**
+     * Name of the player.
+     */
+    private String name;
+
+    /**
      * GamePiece that belongs to the Player.
      */
     private GamePiece gamePiece;
@@ -15,8 +20,18 @@ public class Player {
      *
      * @param gp
      */
-    public Player(GamePiece gp) {
+    public Player(String n, GamePiece gp) {
+        name = n;
         gamePiece = gp;
+    }
+
+    /**
+     * Returns the name of the player.
+     *
+     * @return
+     */
+    public String getName() {
+        return name;
     }
 
     /**

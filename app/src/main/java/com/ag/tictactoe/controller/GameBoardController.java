@@ -1,19 +1,23 @@
 package com.ag.tictactoe.controller;
 
+import android.content.Context;
 import android.util.Log;
+import android.view.View;
+import android.widget.ImageButton;
 
 import com.ag.tictactoe.model.GameBoard;
 import com.ag.tictactoe.model.GamePiece;
 import com.ag.tictactoe.model.Player;
 import com.ag.tictactoe.model.Tile;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 /**
  * Class manages the {@link GameBoard}.
  */
 public class GameBoardController {
-
 
     /**
      * Tag for logging messages.
@@ -34,6 +38,15 @@ public class GameBoardController {
         gameBoard = gb;
     }
 
+     /**
+     * Constructor does a deep copy of this class.
+     *
+     * @param gbc
+     */
+    public GameBoardController(GameBoardController gbc) {
+       gameBoard = new GameBoard(gbc.getGameBoard());
+    }
+
     /**
      * Returns the GameBoard.
      *
@@ -41,6 +54,41 @@ public class GameBoardController {
      */
     public GameBoard getGameBoard() {
         return gameBoard;
+    }
+
+    /**
+     * Returns a List of empty tiles. These are tiles that a player can still make a move on.
+     *
+     * @return
+     */
+    public List<Tile> getEmptyTileList(Context context) {
+
+        List<Tile> emptyTileList = new ArrayList<Tile>();
+
+        for (int i = 0; i < gameBoard.NUMBER_OF_TILE_ROWS; i++) {
+            for (int j = 0; j < gameBoard.NUMBER_OF_TILE_COLS; j++) {
+                Tile tile = gameBoard.getTileMap()[i][j];
+                if(!tile.getIsOccupied(context)) {
+                    emptyTileList.add(tile);
+                }
+            }
+        }
+
+        return emptyTileList;
+    }
+
+    public void mapButtonsToTiles(List<View> buttons) {
+
+        for (View button : buttons) {
+            Tile tile = getTileFromId(button.getId());
+            if(tile != null) {
+                tile.setButton((ImageButton) button);
+            }
+            else {
+                Log.e(TAG, "Unable to find Tile from Button id.");
+            }
+        }
+
     }
 
     /**
@@ -60,6 +108,7 @@ public class GameBoardController {
             return null;
         }
     }
+
 
     /**
      * Checks if this player won the game.
@@ -126,13 +175,13 @@ public class GameBoardController {
      *
      * @return
      */
-    public boolean getStalemateCondition() {
+    public boolean getStalemateCondition(Context context) {
 
         Tile[][] map = gameBoard.getTileMap();
 
         for (int i = 0; i < gameBoard.NUMBER_OF_TILE_ROWS; i++) {
             for (int j = 0; j < gameBoard.NUMBER_OF_TILE_COLS; j++) {
-                if(!map[i][j].getIsOccupied()) {
+                if(!map[i][j].getIsOccupied(context)) {
                     return false;
                 }
             }

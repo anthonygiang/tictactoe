@@ -53,6 +53,22 @@ public class GameBoard {
     }
 
     /**
+     * Constructor does a deep copy of this class.
+     *
+     * @param gb
+     */
+    public GameBoard(GameBoard gb) {
+        tileMap = new Tile[gb.NUMBER_OF_TILE_COLS][gb.NUMBER_OF_TILE_ROWS];
+        boardHashMap = new HashMap<Integer, Tile>(gb.getBoardHashMap());
+        // Reference the new Tile object to the board.
+        for (int i = 0; i < gb.NUMBER_OF_TILE_COLS; i++) {
+            for (int j = 0; j < gb.NUMBER_OF_TILE_ROWS; j++) {
+                tileMap[i][j] = new Tile(gb.tileMap[i][j]);
+            }
+        }
+    }
+
+    /**
      * Constructor initializes the 2D array of Tile and maps the Button to the Tile.
      */
     public GameBoard(List<View> buttons) {

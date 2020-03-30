@@ -49,6 +49,11 @@ public class GameController {
     private GameBoardController gameBoardController;
 
     /**
+     * Enables the AI as an opponent.
+     */
+    private boolean aiEnabled;
+
+    /**
      * Constructor takes in a GameView and sets up the game.
      *
      * @param gv
@@ -61,9 +66,22 @@ public class GameController {
     }
 
     /**
+     * Constructor does a deep copy of the GameBoardController.
+     *
+     * @param gc
+     */
+    public GameController(GameController gc) {
+        gameView = gc.gameView;
+        turnController = new TurnController(gc.turnController);
+        playerController = gc.playerController;
+        gameBoardController = new GameBoardController(gc.gameBoardController);
+    }
+
+    /**
      * Initializes the game.
      */
     private void initializeGame() {
+        aiEnabled = false;
         initializeControllers();
         setUpTiles();
     }
@@ -74,8 +92,8 @@ public class GameController {
     private void initializeControllers() {
 
         turnController = new TurnController();
-        Player playerOne = new Player(new CrossPiece());
-        Player playerTwo = new Player(new CirclePiece());
+        Player playerOne = new Player("Player One", new CrossPiece());
+        Player playerTwo = new Player("Player Two", new CirclePiece());
 
         List<Player> players = new ArrayList<>();
         players.add(playerOne);
@@ -93,12 +111,15 @@ public class GameController {
      */
     private void startGameAgainstAI() {
         initializeGame();
-        // TODO implement.
+        aiEnabled = true;
 
-        // Need to add AI as a player.
+        // TODO implement.
         // Make first move for now.
         // Prompt user to ask who to go first.
-        // Need to add action to button listener, to make a move after the user has made a move.
+//        List<Player> players = playerController.getPlayers();
+//        Player aiPlayer = new Player("AI", new CirclePiece());
+//        players.remove(1);
+//        players.add(aiPlayer);
 
 
     }
@@ -110,26 +131,15 @@ public class GameController {
 
         // Get current state of the board.
         // Determine possible moves.
+        Player player = turnController.getPlayerTurn(playerController.getPlayers());
         GameTree gameTree = new GameTree(this);
         // Make move
+        ImageButton button = gameTree.determinePossibleMove(gameTree.getInitialGameTreeNode(),
+                gameView.getAppCompatActivity().getApplicationContext()).getButton();
+        Tile tile = gameBoardController.getTileFromId(button.getId());
 
-    }
-
-    /**
-     * Updates the Tile listeners to include a step to make the AI move
-     * after the user makes a move.
-     */
-    private void updateTileListener() {
-
-        // Iterate through all the views and assign a click listener.
-        for (View button : gameView.getTiles()) {
-            button.setOnClickListener((new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    checkTileClick((ImageButton) v);
-                    setAIMove();
-                }
-            }));
+        if (tile != null) {
+            makePlayerMove(tile);
         }
     }
 
@@ -165,93 +175,92 @@ public class GameController {
     private void setUpTiles() {
 
         // Iterate through all the views and assign a click listener.
-        for (View button : gameView.getTiles()) {
+        for (final View button : gameView.getTiles()) {
             button.setClickable(true);
             ImageButton imageButton = (ImageButton) button;
             imageButton.setImageResource(android.R.color.transparent);
             button.setOnClickListener((new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    checkTileClick((ImageButton) v);
+                    // Retrieves the Tile referenced by this button.
+                    Tile tile = gameBoardController.getTileFromId(button.getId());
+                    if (tile != null) {
+                        // Check if the Tile is unoccupied and place player's game piece on the Tile.
+                        if (!tile.getIsOccupied(gameView.getAppCompatActivity().getApplicationContext())) {
+
+                            if (makePlayerMove(tile)) {
+                                if (!checkEndGameConditions()) {
+                                    if (aiEnabled) {
+                                        setAIMove();
+                                        checkEndGameConditions();
+                                    }
+                                }
+                            }
+                        }
+                    } else {
+                        Log.e(TAG, "Unable to find tile.");
+                    }
                 }
             }));
         }
+        gameBoardController.mapButtonsToTiles(gameView.getTiles());
+
     }
 
-    /**
-     * Disable clicking on the Tiles.
-     */
-    private void disallowClickForTiles() {
+    private boolean checkEndGameConditions() {
 
-        // Iterate through all the views and assign a click listener.
-        for (View button : gameView.getTiles()) {
-            button.setClickable(false);
+        Player player = turnController.getPlayerTurn(playerController.getPlayers());
+
+        // Check if a player has won the game.
+        if (gameBoardController.getWinConditionForPlayer(player) == true) {
+            Context context = gameView.getAppCompatActivity().getApplicationContext();
+            String toastText = "Win!";
+            int duration = Toast.LENGTH_SHORT;
+
+            Toast toast = Toast.makeText(context, toastText, duration);
+            toast.show();
+
+            gameView.disallowClickForTiles();
+            return true;
         }
-    }
+        // Check if the game resulted in a tie.
+        else if (gameBoardController.getStalemateCondition(gameView.getAppCompatActivity().getApplicationContext())) {
+            Context context = gameView.getAppCompatActivity().getApplicationContext();
+            String toastText = "Stalemate!";
+            int duration = Toast.LENGTH_SHORT;
 
-    /**
-     * Sets up an on click listener for this button.
-     *
-     * @param button
-     */
-    private void checkTileClick(ImageButton button) {
+            Toast toast = Toast.makeText(context, toastText, duration);
+            toast.show();
 
-        // Retrieves the Tile referenced by this button.
-        Tile tile = gameBoardController.getTileFromId(button.getId());
-        if (tile != null) {
-
-            // Check if the Tile is already occupied and prompt player to select again.
-            if (tile.getIsOccupied()) {
-                Context context = gameView.getAppCompatActivity().getApplicationContext();
-                String toastText = "Select another tile.";
-                int duration = Toast.LENGTH_SHORT;
-
-                Toast toast = Toast.makeText(context, toastText, duration);
-                toast.show();
-            }
-            // Place player's game piece on the Tile.
-            else {
-                // Determine which player gets to move next.
-                Player player = turnController.getPlayerTurn(playerController.getPlayers());
-
-                if (player != null) {
-
-                    // Sets the player's game piece on this tile and sets the image.
-                    tile.setGamePiece(player.getGamePiece());
-                    button.setImageResource(player.getGamePiece().getDrawable());
-
-                    // Check if a player has won the game.
-                    if (gameBoardController.getWinConditionForPlayer(player) == true) {
-                        Context context = gameView.getAppCompatActivity().getApplicationContext();
-                        String toastText = "Win!";
-                        int duration = Toast.LENGTH_SHORT;
-
-                        Toast toast = Toast.makeText(context, toastText, duration);
-                        toast.show();
-
-                        disallowClickForTiles();
-                    }
-                    // Check if the game resulted in a tie.
-                    else if (gameBoardController.getStalemateCondition()) {
-                        Context context = gameView.getAppCompatActivity().getApplicationContext();
-                        String toastText = "Stalemate!";
-                        int duration = Toast.LENGTH_SHORT;
-
-                        Toast toast = Toast.makeText(context, toastText, duration);
-                        toast.show();
-
-                        disallowClickForTiles();
-                    } else {
-                        // Move to the next player's turn.
-                        turnController.changeTurn(playerController.getPlayers());
-                    }
-                } else {
-                    Log.e(TAG, "Unable to find player.");
-                }
-            }
+            gameView.disallowClickForTiles();
+            return true;
         } else {
-            Log.e(TAG, "Unable to find tile.");
+            // Move to the next player's turn.
+            turnController.changeTurn(playerController.getPlayers());
         }
+        return false;
+    }
+
+    /**
+     * Sets the player's GamePiece on the Tile.
+     *
+     * @param tile
+     * @return
+     */
+    private boolean makePlayerMove(Tile tile) {
+        // Determine which player gets to move next.
+        Player player = turnController.getPlayerTurn(playerController.getPlayers());
+
+        if (player != null) {
+            // Sets the player's game piece on this Tile and sets the image.
+            tile.setGamePiece(player.getGamePiece());
+            tile.getButton().setImageResource(player.getGamePiece().getDrawable());
+            return true;
+        } else {
+            Log.e(TAG, "Unable to find player.");
+        }
+
+        return false;
     }
 
     /**
