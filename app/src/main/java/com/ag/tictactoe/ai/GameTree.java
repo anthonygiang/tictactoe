@@ -1,9 +1,10 @@
 package com.ag.tictactoe.ai;
 
-import android.content.Context;
-
 import com.ag.tictactoe.controller.GameBoardController;
 import com.ag.tictactoe.controller.GameController;
+import com.ag.tictactoe.controller.PlayerController;
+import com.ag.tictactoe.controller.TurnController;
+import com.ag.tictactoe.model.Player;
 import com.ag.tictactoe.model.Tile;
 
 import java.util.List;
@@ -43,11 +44,41 @@ public class GameTree {
      */
     private void buildGameTree(GameTreeNode node) {
 
-//        GameController gc = node.getGameController();
-//        GameBoardController gbc = gc.getGameBoardController();
-//
-//
-//                List<Tile> possibleTiles =
+        GameController gc = node.getGameController();
+        GameBoardController gbc = gc.getGameBoardController();
+        PlayerController pc = gc.getPlayerController();
+        TurnController tc = gc.getTurnController();
+
+        Player player = tc.getPlayerTurn(pc.getPlayers());
+
+        List<Tile> emptyTileList = gbc.getEmptyTileList();
+
+
+        for(Tile tile : emptyTileList) {
+            gc.makePlayerMove(tile);
+            if(gbc.getWinConditionForPlayer(player)) {
+                node.setWinNode(true);
+            }
+            if(gbc.getStalemateCondition()) {
+                node.setTieNode(true);
+            }
+            else {
+                tc.changeTurn(pc.getPlayers());
+                // TODO recurse
+                GameTreeNode newNode = new GameTreeNode(gc);
+                node.addChildTreeNode(newNode);
+                buildGameTree(newNode);
+            }
+
+        }
+    }
+
+    public void getBestTileMove() {
+
+        buildGameTree(initialGameTreeNode);
+
+
+
     }
 
     /**
@@ -55,19 +86,16 @@ public class GameTree {
      *
      *
      * @param node
-     * @param context
      * @return
      */
-    public Tile determinePossibleMove(GameTreeNode node, Context context) {
+    public Tile determinePossibleMove(GameTreeNode node) {
 
         GameController gc = node.getGameController();
         GameBoardController gbc = gc.getGameBoardController();
 
-        List<Tile> emptyTileList = gbc.getEmptyTileList(context);
+        List<Tile> emptyTileList = gbc.getEmptyTileList();
 
         if(!emptyTileList.isEmpty()) {
-
-            // TODO Find best move.
             return emptyTileList.get(0);
         }
         return null;

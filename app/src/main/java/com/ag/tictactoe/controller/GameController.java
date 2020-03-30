@@ -134,8 +134,7 @@ public class GameController {
         Player player = turnController.getPlayerTurn(playerController.getPlayers());
         GameTree gameTree = new GameTree(this);
         // Make move
-        ImageButton button = gameTree.determinePossibleMove(gameTree.getInitialGameTreeNode(),
-                gameView.getAppCompatActivity().getApplicationContext()).getButton();
+        ImageButton button = gameTree.determinePossibleMove(gameTree.getInitialGameTreeNode()).getButton();
         Tile tile = gameBoardController.getTileFromId(button.getId());
 
         if (tile != null) {
@@ -186,8 +185,7 @@ public class GameController {
                     Tile tile = gameBoardController.getTileFromId(button.getId());
                     if (tile != null) {
                         // Check if the Tile is unoccupied and place player's game piece on the Tile.
-                        if (!tile.getIsOccupied(gameView.getAppCompatActivity().getApplicationContext())) {
-
+                        if (!tile.getIsOccupied()) {
                             if (makePlayerMove(tile)) {
                                 if (!checkEndGameConditions()) {
                                     if (aiEnabled) {
@@ -196,6 +194,13 @@ public class GameController {
                                     }
                                 }
                             }
+                        }
+                        else {
+                            Context context = gameView.getAppCompatActivity().getApplicationContext();
+                            String toastText = "Select another tile.";
+                            int duration = Toast.LENGTH_SHORT;
+                            Toast toast = Toast.makeText(context, toastText, duration);
+                            toast.show();
                         }
                     } else {
                         Log.e(TAG, "Unable to find tile.");
@@ -224,7 +229,7 @@ public class GameController {
             return true;
         }
         // Check if the game resulted in a tie.
-        else if (gameBoardController.getStalemateCondition(gameView.getAppCompatActivity().getApplicationContext())) {
+        else if (gameBoardController.getStalemateCondition()) {
             Context context = gameView.getAppCompatActivity().getApplicationContext();
             String toastText = "Stalemate!";
             int duration = Toast.LENGTH_SHORT;
@@ -247,7 +252,7 @@ public class GameController {
      * @param tile
      * @return
      */
-    private boolean makePlayerMove(Tile tile) {
+    public boolean makePlayerMove(Tile tile) {
         // Determine which player gets to move next.
         Player player = turnController.getPlayerTurn(playerController.getPlayers());
 

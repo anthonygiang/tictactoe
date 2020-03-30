@@ -63,12 +63,8 @@ public class Tile {
      *
      * @return
      */
-    public boolean getIsOccupied(Context context) {
+    public boolean getIsOccupied() {
         if (gamePiece != null) {
-            String toastText = "Select another tile.";
-            int duration = Toast.LENGTH_SHORT;
-            Toast toast = Toast.makeText(context, toastText, duration);
-            toast.show();
             return true;
         } else {
             return false;
