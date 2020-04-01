@@ -47,7 +47,7 @@ public class GameBoard {
         // Reference the new Tile object to the board.
         for (int i = 0; i < NUMBER_OF_TILE_ROWS; i++) {
             for (int j = 0; j < NUMBER_OF_TILE_COLS; j++) {
-                tileMap[i][j] = new Tile();
+                tileMap[i][j] = new Tile(i, j);
             }
         }
     }
@@ -80,7 +80,7 @@ public class GameBoard {
         // Reference the new Tile object to the board.
         for (int i = 0; i < NUMBER_OF_TILE_ROWS; i++) {
             for (int j = 0; j < NUMBER_OF_TILE_COLS; j++) {
-                tileMap[i][j] = new Tile();
+                tileMap[i][j] = new Tile(i, j);
                 // Map the Button id to the Tile.
                 if (buttonCount < buttons.size()) {
                     boardHashMap.put(buttons.get(buttonCount).getId(), tileMap[i][j]);

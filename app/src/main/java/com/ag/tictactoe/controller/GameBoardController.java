@@ -77,6 +77,10 @@ public class GameBoardController {
         return emptyTileList;
     }
 
+    /**
+     * Sets the button referenced from each Tile.
+     * @param buttons
+     */
     public void mapButtonsToTiles(List<View> buttons) {
 
         for (View button : buttons) {
@@ -88,7 +92,6 @@ public class GameBoardController {
                 Log.e(TAG, "Unable to find Tile from Button id.");
             }
         }
-
     }
 
     /**
@@ -107,6 +110,22 @@ public class GameBoardController {
             Log.e(TAG, "Unable to retrieve Tile from id.");
             return null;
         }
+    }
+
+    /**
+     * Retrieves the Tile from this GameBoard from the coordinates
+     * of another Tile.
+     *
+     * @param t
+     * @return
+     */
+    public Tile getTileFromOtherGameBoardTile(Tile t) {
+        int x = t.getXCoordinate();
+        int y = t.getYCoordinate();
+
+        Tile[][] tileMap = gameBoard.getTileMap();
+
+        return tileMap[x][y];
     }
 
 
@@ -168,6 +187,34 @@ public class GameBoardController {
         }
 
         return false;
+    }
+
+    /**
+     * Displays the current GameBoard.
+     * Used for debugging.
+     */
+    public void displayGameBoard() {
+        String gameBoardString = "Current Game Board:\n";
+        for (int i = 0; i < gameBoard.NUMBER_OF_TILE_ROWS; i++) {
+            for (int j = 0; j < gameBoard.NUMBER_OF_TILE_COLS; j++) {
+                if(gameBoard.getTileMap()[i][j].getGamePiece() == null) {
+                    gameBoardString += "[ ]";
+                }
+                else {
+                    gameBoardString += "[";
+                    String gamePiece = gameBoard.getTileMap()[i][j].getGamePiece().toString();
+                    if(gamePiece.contains("Cross")) {
+                        gameBoardString += "X";
+                    }
+                    else if(gamePiece.contains("Circle")) {
+                        gameBoardString += "O";
+                    }
+                    gameBoardString += "]";
+                }
+            }
+            gameBoardString += "\n";
+        }
+        Log.d(TAG, gameBoardString);
     }
 
     /**

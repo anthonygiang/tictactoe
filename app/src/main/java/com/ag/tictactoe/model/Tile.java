@@ -16,6 +16,16 @@ public class Tile {
     private static final String TAG = Tile.class.getName();
 
     /**
+     * X coordinate where this Tile resides.
+     */
+    private int xCoordinate;
+
+    /**
+     * Y coordinate where this Tile resides.
+     */
+    private int yCoordinate;
+
+    /**
      * Denotes which GamePiece occupies this Tile.
      */
     private GamePiece gamePiece;
@@ -28,9 +38,23 @@ public class Tile {
     /**
      * Default constructor initializes player to null.
      */
-    public Tile() {
+    public Tile(int x, int y) {
         gamePiece = null;
         button = null;
+        xCoordinate = x;
+        yCoordinate = y;
+    }
+
+    /**
+     * Constructor copies this class.
+     *
+     * @param t
+     */
+    public Tile(Tile t) {
+        gamePiece = t.gamePiece;
+        button = t.getButton();
+        xCoordinate = t.xCoordinate;
+        yCoordinate = t.yCoordinate;
     }
 
     /**
@@ -46,16 +70,6 @@ public class Tile {
      */
     public ImageButton getButton() {
         return button;
-    }
-
-    /**
-     * Constructor copies this class.
-     *
-     * @param t
-     */
-    public Tile(Tile t) {
-        gamePiece = t.gamePiece;
-        button = t.getButton();
     }
 
     /**
@@ -78,7 +92,6 @@ public class Tile {
      */
     public void setGamePiece(GamePiece gp) {
         gamePiece = gp;
-        Log.i(TAG, "Setting game piece - " + gp.toString() + " to Tile ");
     }
 
     /**
@@ -86,6 +99,32 @@ public class Tile {
      */
     public GamePiece getGamePiece() {
         return gamePiece;
+    }
+
+    /**
+     * Returns the x coordinate for this Tile.
+     *
+     * @return
+     */
+    public int getXCoordinate() {
+        return xCoordinate;
+    }
+
+    /**
+     * Returns the y coordinate for this Tile.
+     *
+     * @return
+     */
+    public int getYCoordinate() {
+        return yCoordinate;
+    }
+
+    /**
+     * Displays the coordinates of this Tile.
+     * Used for debugging.
+     */
+    public void displayCoordinates() {
+        Log.d(TAG, "Tile[" + xCoordinate + "," + yCoordinate + "]");
     }
 
 }

@@ -54,13 +54,18 @@ public class GameController {
     private boolean aiEnabled;
 
     /**
+     * Name of the AI player.
+     */
+    public final String AI_NAME = "AI Player";
+
+    /**
      * Constructor takes in a GameView and sets up the game.
      *
      * @param gv
      */
     public GameController(GameView gv) {
         gameView = gv;
-        initializeGame();
+        initializeGame(false);
         setUpRestart();
         setUpAI();
     }
@@ -80,8 +85,8 @@ public class GameController {
     /**
      * Initializes the game.
      */
-    private void initializeGame() {
-        aiEnabled = false;
+    private void initializeGame(boolean ai) {
+        aiEnabled = ai;
         initializeControllers();
         setUpTiles();
     }
@@ -93,7 +98,14 @@ public class GameController {
 
         turnController = new TurnController();
         Player playerOne = new Player("Player One", new CrossPiece());
-        Player playerTwo = new Player("Player Two", new CirclePiece());
+        Player playerTwo;
+        if(aiEnabled) {
+            playerTwo = new Player(AI_NAME, new CirclePiece());
+        }
+        else {
+            playerTwo = new Player("Player Two", new CirclePiece());
+        }
+
 
         List<Player> players = new ArrayList<>();
         players.add(playerOne);
@@ -110,7 +122,7 @@ public class GameController {
      * Starts the game against AI.
      */
     private void startGameAgainstAI() {
-        initializeGame();
+        initializeGame(true);
         aiEnabled = true;
 
         // TODO implement.
@@ -133,13 +145,22 @@ public class GameController {
         // Determine possible moves.
         Player player = turnController.getPlayerTurn(playerController.getPlayers());
         GameTree gameTree = new GameTree(this);
-        // Make move
-        ImageButton button = gameTree.determinePossibleMove(gameTree.getInitialGameTreeNode()).getButton();
-        Tile tile = gameBoardController.getTileFromId(button.getId());
+        Tile bestTile = gameTree.getBestTileMove();
 
-        if (tile != null) {
-            makePlayerMove(tile);
+        if(bestTile != null) {
+            Tile currentTile = gameBoardController.getTileFromOtherGameBoardTile(bestTile);
+
+            if (currentTile != null) {
+                makePlayerMove(player, currentTile);
+
+                ImageButton button = currentTile.getButton();
+                gameView.setButtonImage(button, player.getGamePiece().getDrawable());
+            }
         }
+        else {
+            Log.e(TAG, "Unable to determine best move for AI.");
+        }
+
     }
 
     /**
@@ -163,7 +184,7 @@ public class GameController {
         button.setOnClickListener((new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                initializeGame();
+                initializeGame(false);
             }
         }));
     }
@@ -176,7 +197,7 @@ public class GameController {
         // Iterate through all the views and assign a click listener.
         for (final View button : gameView.getTiles()) {
             button.setClickable(true);
-            ImageButton imageButton = (ImageButton) button;
+            final ImageButton imageButton = (ImageButton) button;
             imageButton.setImageResource(android.R.color.transparent);
             button.setOnClickListener((new View.OnClickListener() {
                 @Override
@@ -186,7 +207,12 @@ public class GameController {
                     if (tile != null) {
                         // Check if the Tile is unoccupied and place player's game piece on the Tile.
                         if (!tile.getIsOccupied()) {
-                            if (makePlayerMove(tile)) {
+
+                            // Determine which player gets to move next.
+                            Player player = turnController.getPlayerTurn(playerController.getPlayers());
+
+                            if (makePlayerMove(player, tile)) {
+                                gameView.setButtonImage(imageButton, player.getGamePiece().getDrawable());
                                 if (!checkEndGameConditions()) {
                                     if (aiEnabled) {
                                         setAIMove();
@@ -212,6 +238,13 @@ public class GameController {
 
     }
 
+    /**
+     * Returns true if the game has ended.
+     * Set end game functions in place if it has ended or move to the next
+     * player's turn.
+     *
+     * @return
+     */
     private boolean checkEndGameConditions() {
 
         Player player = turnController.getPlayerTurn(playerController.getPlayers());
@@ -252,14 +285,11 @@ public class GameController {
      * @param tile
      * @return
      */
-    public boolean makePlayerMove(Tile tile) {
-        // Determine which player gets to move next.
-        Player player = turnController.getPlayerTurn(playerController.getPlayers());
+    public boolean makePlayerMove(Player player, Tile tile) {
 
         if (player != null) {
             // Sets the player's game piece on this Tile and sets the image.
             tile.setGamePiece(player.getGamePiece());
-            tile.getButton().setImageResource(player.getGamePiece().getDrawable());
             return true;
         } else {
             Log.e(TAG, "Unable to find player.");
