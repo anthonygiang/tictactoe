@@ -61,7 +61,6 @@ public class TurnController {
         } else {
             turn = 0;
         }
-        Log.i(TAG, "Next player's turn: " + this.getPlayerTurn(players).getName());
     }
 
 }
