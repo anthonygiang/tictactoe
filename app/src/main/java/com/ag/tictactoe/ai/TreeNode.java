@@ -37,4 +37,34 @@ public abstract class TreeNode {
         children.add(n);
     }
 
+    /**
+     * Returns the root TreeNode from this node.
+     *
+     * @return
+     */
+    public TreeNode getRootNode() {
+        TreeNode iterator = this;
+        while (iterator.parent != null) {
+            iterator = iterator.parent;
+        }
+        return iterator;
+    }
+
+    /**
+     * Returns a List of TreeNodes from the root to the designated TreeNode.
+     *
+     * @return
+     */
+    public List<TreeNode> getNodePathFromRoot() {
+        TreeNode iterator = this;
+        List<TreeNode> path = new ArrayList<TreeNode>();
+
+        while (iterator != null) {
+            path.add(0, iterator);
+            iterator = iterator.parent;
+        }
+
+        return path;
+    }
+
 }
