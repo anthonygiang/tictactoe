@@ -1,6 +1,7 @@
 package com.ag.tictactoe.view;
 
 import android.view.View;
+import android.widget.ImageButton;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -55,6 +56,16 @@ public class GameView {
         for (View button : tiles) {
             button.setClickable(false);
         }
+    }
+
+    /**
+     * Sets the ImageButton's image resource to a drawable resource.
+     *
+     * @param button
+     * @param drawableResource
+     */
+    public void setButtonImage(ImageButton button, int drawableResource) {
+        button.setImageResource(drawableResource);
     }
 
     /**
