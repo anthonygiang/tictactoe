@@ -4,7 +4,9 @@ import com.ag.tictactoe.controller.GameController;
 import com.ag.tictactoe.model.Player;
 import com.ag.tictactoe.model.Tile;
 
+import java.util.LinkedList;
 import java.util.List;
+import java.util.Queue;
 
 /**
  * Class represents a TreeNode inside of a GameTree. Each node represents a state of the game.
@@ -37,11 +39,6 @@ public class GameTreeNode extends TreeNode {
     private GameController gameController;
 
     /**
-     * Indicates this node was visited by a search algorithm.
-     */
-    private boolean visited;
-
-    /**
      * Indicates the min max value.
      */
     private int minMaxValue;
@@ -58,7 +55,6 @@ public class GameTreeNode extends TreeNode {
      */
     public GameTreeNode(GameController gc) {
         gameController = new GameController(gc);
-        visited = false;
         minMaxValue = UNDETERMINED;
     }
 
@@ -103,48 +99,79 @@ public class GameTreeNode extends TreeNode {
     }
 
     /**
-     * Sets whether this node resulted in a win.
+     * Sets the min max value of this Node.
+     *
+     * @param value
      */
-    public void setWinNode() {
-        minMaxValue = WIN;
+    public void setNodeMinMaxValue(int value) {
+        minMaxValue = value;
     }
 
     /**
-     * Sets whether this node resulted in a tie.
+     * Returns the min max value of this Node.
+     *
+     * @return
+     */
+    public int getMinMaxValue() {
+        return minMaxValue;
+    }
+
+    /**
+     * Sets the min max value of this node based on if this node is maximizing.
+     *
+     * @param isMaximizer
+     */
+    public void setNodeMinMaxValue(boolean isMaximizer) {
+        if (isMaximizer) {
+            minMaxValue = WIN;
+        } else {
+            minMaxValue = LOSE;
+        }
+    }
+
+    /**
+     * Sets this node resulted in a tie.
      */
     public void setTieNode() {
         minMaxValue = TIE;
     }
 
     /**
-     * Sets whether this node resulted in a lost.
-     */
-    public void setLoseNode() {
-        minMaxValue = LOSE;
-    }
-
-    /**
-     * Returns if this node resulted in a win.
+     * Find's the quicker path to getting to a win if it exists.
      *
      * @return
      */
-    public boolean getWinNode() {
+    public GameTreeNode findQuickestWinNode() {
+
+        // Only want to compute this if a win was even possible.
         if (minMaxValue == WIN) {
-            return true;
-        }
-        return false;
-    }
 
-    /**
-     * Returns true if this node resulted in a tie.
-     *
-     * @return
-     */
-    public boolean getTieNode() {
-        if (minMaxValue == TIE) {
-            return true;
+            GameTreeNode root = (GameTreeNode) this.getRootNode();
+            Queue<GameTreeNode> remainingNodes = new LinkedList<GameTreeNode>();
+            remainingNodes.add(root);
+
+            // Keep looking while children nodes remain.
+            while (!remainingNodes.isEmpty()) {
+
+                GameTreeNode currentNode = remainingNodes.remove();
+                List<TreeNode> children = currentNode.children;
+
+                // Return this node if it is a win and there are no children. This node
+                // is the fastest to a win.
+                if (children.isEmpty() && currentNode.minMaxValue == WIN) {
+                    return currentNode;
+                } else {
+                    for (TreeNode child : children) {
+                        GameTreeNode gameTreeNodeChild = (GameTreeNode) child;
+                        if (gameTreeNodeChild.minMaxValue == WIN) {
+                            remainingNodes.add(gameTreeNodeChild);
+                        }
+                    }
+                }
+            }
         }
-        return false;
+
+        return null;
     }
 
 }
