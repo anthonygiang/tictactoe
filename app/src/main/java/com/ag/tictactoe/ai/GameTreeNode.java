@@ -41,7 +41,7 @@ public class GameTreeNode extends TreeNode {
     /**
      * Indicates the min max value.
      */
-    private int minMaxValue;
+    private double minMaxValue;
 
     /**
      * This is the Tile move used on the parent Node that resulted in this Node.
@@ -103,7 +103,7 @@ public class GameTreeNode extends TreeNode {
      *
      * @param value
      */
-    public void setNodeMinMaxValue(int value) {
+    public void setNodeMinMaxValue(double value) {
         minMaxValue = value;
     }
 
@@ -112,20 +112,21 @@ public class GameTreeNode extends TreeNode {
      *
      * @return
      */
-    public int getMinMaxValue() {
+    public double getMinMaxValue() {
         return minMaxValue;
     }
 
     /**
      * Sets the min max value of this node based on if this node is maximizing.
+     * Utilize the depth of this node to keep the shortest length path from root to leaf node.
      *
      * @param isMaximizer
      */
     public void setNodeMinMaxValue(boolean isMaximizer) {
         if (isMaximizer) {
-            minMaxValue = WIN;
+            minMaxValue = WIN + (1.0/this.getNodePathFromRoot().size());
         } else {
-            minMaxValue = LOSE;
+            minMaxValue = LOSE - (1 - 1.0/this.getNodePathFromRoot().size());
         }
     }
 

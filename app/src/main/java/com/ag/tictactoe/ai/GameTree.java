@@ -123,26 +123,15 @@ public class GameTree {
 
         return bestNode;
     }
-
-
+    
     /**
      * Returns the best possible move to make.
      *
      * @return
      */
     public Tile getBestTileMove() {
-
         // Populates a GameTree that looks at all possible outcomes.
         GameTreeNode best = buildGameTree(initialGameTreeNode, true);
-
-        // Find the quicker win path if it exists.
-        GameTreeNode optimalBest = best.findQuickestWinNode();
-
-        // Utilizes the move from the quicker win path if it exists.
-        if (optimalBest != null) {
-            return initialGameTreeNode.getTileMove((optimalBest));
-        }
-
         return initialGameTreeNode.getTileMove((best.getNextNodeMove()));
     }
 
