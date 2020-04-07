@@ -44,7 +44,7 @@ public class GameTree {
      * @param isMaximizer
      * @return
      */
-    private GameTreeNode buildGameTree(GameTreeNode node, boolean isMaximizer) {
+    private GameTreeNode buildGameTree(GameTreeNode node, boolean isMaximizer, double alpha, double beta) {
 
         GameController node_gc = node.getGameController();
         GameBoardController node_gbc = node_gc.getGameBoardController();
@@ -74,12 +74,46 @@ public class GameTree {
             // Check if this was a winning move.
             if (newNode_gbc.getWinConditionForPlayer(player)) {
                 newNode.setNodeMinMaxValue(isMaximizer);
-                bestGameTreeNode = checkMiniMaxValue(bestGameTreeNode, newNode, isMaximizer);
+
+                if (bestGameTreeNode == null) {
+                    bestGameTreeNode = newNode;
+                } else if (isMaximizer) {
+                    if (bestGameTreeNode.getMinMaxValue() < newNode.getMinMaxValue()) {
+                        bestGameTreeNode = newNode;
+                    }
+                    if (bestGameTreeNode.getMinMaxValue() > alpha) {
+                        alpha = bestGameTreeNode.getMinMaxValue();
+                    }
+                } else {
+                    if (bestGameTreeNode.getMinMaxValue() > newNode.getMinMaxValue()) {
+                        bestGameTreeNode = newNode;
+                    }
+                    if (bestGameTreeNode.getMinMaxValue() < beta) {
+                        beta = bestGameTreeNode.getMinMaxValue();
+                    }
+                }
             }
             // Check if this move was a tie.
             else if (newNode_gbc.getStalemateCondition()) {
                 newNode.setTieNode();
-                bestGameTreeNode = checkMiniMaxValue(bestGameTreeNode, newNode, isMaximizer);
+
+                if (bestGameTreeNode == null) {
+                    bestGameTreeNode = newNode;
+                } else if (isMaximizer) {
+                    if (bestGameTreeNode.getMinMaxValue() < newNode.getMinMaxValue()) {
+                        bestGameTreeNode = newNode;
+                    }
+                    if (bestGameTreeNode.getMinMaxValue() > alpha) {
+                        alpha = bestGameTreeNode.getMinMaxValue();
+                    }
+                } else {
+                    if (bestGameTreeNode.getMinMaxValue() > newNode.getMinMaxValue()) {
+                        bestGameTreeNode = newNode;
+                    }
+                    if (bestGameTreeNode.getMinMaxValue() < beta) {
+                        beta = bestGameTreeNode.getMinMaxValue();
+                    }
+                }
 
             }
             // Continue to play the game and populate the GameTree.
@@ -89,8 +123,30 @@ public class GameTree {
 
                 // Continue building the GameTree to determine the best minimax value.
                 // The maximizer becomes the minimizer and vice versa with every turn.
-                buildGameTree(newNode, !isMaximizer);
-                bestGameTreeNode = checkMiniMaxValue(bestGameTreeNode, newNode, isMaximizer);
+                buildGameTree(newNode, !isMaximizer, alpha, beta);
+
+                if (bestGameTreeNode == null) {
+                    bestGameTreeNode = newNode;
+                } else if (isMaximizer) {
+                    if (bestGameTreeNode.getMinMaxValue() < newNode.getMinMaxValue()) {
+                        bestGameTreeNode = newNode;
+                    }
+                    if (bestGameTreeNode.getMinMaxValue() > alpha) {
+                        alpha = bestGameTreeNode.getMinMaxValue();
+                    }
+                } else {
+                    if (bestGameTreeNode.getMinMaxValue() > newNode.getMinMaxValue()) {
+                        bestGameTreeNode = newNode;
+                    }
+                    if (bestGameTreeNode.getMinMaxValue() < beta) {
+                        beta = bestGameTreeNode.getMinMaxValue();
+                    }
+                }
+            }
+
+            // Don't continue looking at the rest of the possible moves.
+            if (beta <= alpha) {
+                break;
             }
         }
 
@@ -100,38 +156,13 @@ public class GameTree {
     }
 
     /**
-     * Compares the current node to the best depending on if this is the maximizer.
-     *
-     * @param bestNode
-     * @param currentNode
-     * @param isMaximizer
-     * @return
-     */
-    public GameTreeNode checkMiniMaxValue(GameTreeNode bestNode, GameTreeNode currentNode, boolean isMaximizer) {
-
-        if (bestNode == null) {
-            bestNode = currentNode;
-        } else if (isMaximizer) {
-            if (bestNode.getMinMaxValue() < currentNode.getMinMaxValue()) {
-                bestNode = currentNode;
-            }
-        } else {
-            if (bestNode.getMinMaxValue() > currentNode.getMinMaxValue()) {
-                bestNode = currentNode;
-            }
-        }
-
-        return bestNode;
-    }
-    
-    /**
      * Returns the best possible move to make.
      *
      * @return
      */
     public Tile getBestTileMove() {
         // Populates a GameTree that looks at all possible outcomes.
-        GameTreeNode best = buildGameTree(initialGameTreeNode, true);
+        GameTreeNode best = buildGameTree(initialGameTreeNode, true, Double.NEGATIVE_INFINITY, Double.POSITIVE_INFINITY);
         return initialGameTreeNode.getTileMove((best.getNextNodeMove()));
     }
 
