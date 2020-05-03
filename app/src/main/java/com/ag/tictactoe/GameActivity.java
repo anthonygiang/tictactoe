@@ -10,7 +10,7 @@ import com.ag.tictactoe.view.GameView;
 /**
  * Runs a Tic Tac Toe game against a person or AI.
  */
-public class MainActivity extends AppCompatActivity {
+public class GameActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
