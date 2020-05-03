@@ -15,9 +15,6 @@ import com.ag.tictactoe.model.Player;
 import com.ag.tictactoe.model.Tile;
 import com.ag.tictactoe.view.GameView;
 
-import java.util.ArrayList;
-import java.util.List;
-
 /**
  * Class manages the game.
  */
@@ -37,11 +34,6 @@ public class GameController {
      * PlayerController will manage the Player.
      */
     private PlayerController playerController;
-
-    /**
-     * TurnController will manage the turns.
-     */
-    private TurnController turnController;
 
     /**
      * GameBoardController will manage the GameBoard.
@@ -77,8 +69,7 @@ public class GameController {
      */
     public GameController(GameController gc) {
         gameView = gc.gameView;
-        turnController = new TurnController(gc.turnController);
-        playerController = gc.playerController;
+        playerController = new PlayerController(gc.playerController);
         gameBoardController = new GameBoardController(gc.gameBoardController);
     }
 
@@ -96,7 +87,6 @@ public class GameController {
      */
     private void initializeControllers() {
 
-        turnController = new TurnController();
         Player playerOne = new Player("Player One", new CrossPiece());
         Player playerTwo;
         if(aiEnabled) {
@@ -106,12 +96,9 @@ public class GameController {
             playerTwo = new Player("Player Two", new CirclePiece());
         }
 
-
-        List<Player> players = new ArrayList<>();
-        players.add(playerOne);
-        players.add(playerTwo);
-
-        playerController = new PlayerController(players);
+        playerController = new PlayerController();
+        playerController.addPlayer(playerOne);
+        playerController.addPlayer(playerTwo);
 
         // Initializes a GameBoard.
         GameBoard gameBoard = new GameBoard(gameView.getTiles());
@@ -143,7 +130,7 @@ public class GameController {
 
         // Get current state of the board.
         // Determine possible moves.
-        Player player = turnController.getPlayerTurn(playerController.getPlayers());
+        Player player = playerController.getPlayerTurn();
         GameTree gameTree = new GameTree(this);
         Tile bestTile = gameTree.getBestTileMove();
 
@@ -209,7 +196,7 @@ public class GameController {
                         if (!tile.getIsOccupied()) {
 
                             // Determine which player gets to move next.
-                            Player player = turnController.getPlayerTurn(playerController.getPlayers());
+                            Player player = playerController.getPlayerTurn();
 
                             if (makePlayerMove(player, tile)) {
                                 gameView.setButtonImage(imageButton, player.getGamePiece().getDrawable());
@@ -247,7 +234,7 @@ public class GameController {
      */
     private boolean checkEndGameConditions() {
 
-        Player player = turnController.getPlayerTurn(playerController.getPlayers());
+        Player player = playerController.getPlayerTurn();
 
         // Check if a player has won the game.
         if (gameBoardController.getWinConditionForPlayer(player) == true) {
@@ -274,7 +261,7 @@ public class GameController {
             return true;
         } else {
             // Move to the next player's turn.
-            turnController.changeTurn(playerController.getPlayers());
+            playerController.changeTurn();
         }
         return false;
     }
@@ -305,15 +292,6 @@ public class GameController {
      */
     public PlayerController getPlayerController() {
         return playerController;
-    }
-
-    /**
-     * Returns the {@link TurnController}.
-     *
-     * @return
-     */
-    public TurnController getTurnController() {
-        return turnController;
     }
 
     /**

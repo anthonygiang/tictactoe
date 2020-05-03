@@ -3,7 +3,6 @@ package com.ag.tictactoe.ai;
 import com.ag.tictactoe.controller.GameBoardController;
 import com.ag.tictactoe.controller.GameController;
 import com.ag.tictactoe.controller.PlayerController;
-import com.ag.tictactoe.controller.TurnController;
 import com.ag.tictactoe.model.Player;
 import com.ag.tictactoe.model.Tile;
 
@@ -49,8 +48,7 @@ public class GameTree {
         GameController node_gc = node.getGameController();
         GameBoardController node_gbc = node_gc.getGameBoardController();
         PlayerController node_pc = node_gc.getPlayerController();
-        TurnController node_tc = node_gc.getTurnController();
-        Player player = node_tc.getPlayerTurn(node_pc.getPlayers());
+        Player player = node_pc.getPlayerTurn();
         List<Tile> emptyTileList = node_gbc.getEmptyTileList();
 
         // This will be the best GameTreeNode depending on if this is the
@@ -119,7 +117,7 @@ public class GameTree {
             // Continue to play the game and populate the GameTree.
             else {
                 // Change the player's turn before creating a new Tree.
-                newNode.getGameController().getTurnController().changeTurn(node_pc.getPlayers());
+                newNode.getGameController().getPlayerController().changeTurn();
 
                 // Continue building the GameTree to determine the best minimax value.
                 // The maximizer becomes the minimizer and vice versa with every turn.

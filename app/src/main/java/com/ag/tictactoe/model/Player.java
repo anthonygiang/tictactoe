@@ -26,6 +26,15 @@ public class Player {
     }
 
     /**
+     * Constructor copies a {@link Player} instance.
+     * @param p
+     */
+    public Player(Player p) {
+        name = p.getName();
+        gamePiece = p.getGamePiece();
+    }
+
+    /**
      * Returns the name of the player.
      *
      * @return
