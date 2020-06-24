@@ -101,7 +101,7 @@ public class GameBoardController {
      */
     public Tile getTileFromId(int id) {
 
-        Map<Integer, Tile> boardHashMap = gameBoard.getBoardHashMap();
+        Map<Integer, Tile> boardHashMap = gameBoard.getBoardMap();
 
         if (boardHashMap.containsKey(id)) {
             return boardHashMap.get(id);

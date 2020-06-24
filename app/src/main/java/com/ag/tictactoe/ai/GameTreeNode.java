@@ -12,7 +12,7 @@ import java.util.LinkedList;
 import java.util.Queue;
 
 /**
- * Class represents a TreeNode inside of a GameTree. Each node represents a state of the game.
+ * Class represents a {@link TreeNode} inside of a GameTree. Each node represents a state of the game.
  */
 public class GameTreeNode extends TreeNode {
 
@@ -161,6 +161,8 @@ public class GameTreeNode extends TreeNode {
 
     /**
      * Find's the quicker path to getting to a win if it exists.
+     *
+     * @deprecated Use {@link GameTree#getBestTileMove()}.
      *
      * @return
      */

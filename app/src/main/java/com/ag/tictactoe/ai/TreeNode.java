@@ -10,12 +10,12 @@ import java.util.LinkedList;
 public abstract class TreeNode {
 
     /**
-     * Reference to the parent TreeNode.
+     * Reference to the parent {@link TreeNode}.
      */
     protected TreeNode parent;
 
     /**
-     * List of all the children TreeNodes.
+     * Collection of all the children {@link TreeNode}s.
      */
     protected Collection<TreeNode> children;
 
@@ -31,15 +31,15 @@ public abstract class TreeNode {
      * Adds a child TreeNode to this current TreeNode.
      * Sets the parent node of the child to this current TreeNode.
      *
-     * @param n
+     * @param childNode - Child node being added to Tree.
      */
-    public void addChildTreeNode(TreeNode n) {
-        n.parent = this;
-        children.add(n);
+    public void addChildTreeNode(TreeNode childNode) {
+        childNode.parent = this;
+        children.add(childNode);
     }
 
     /**
-     * Returns the root TreeNode from this node.
+     * Returns the root {@link TreeNode} from this node.
      *
      * @return
      */
@@ -52,7 +52,7 @@ public abstract class TreeNode {
     }
 
     /**
-     * Returns a List of TreeNodes from the root to the designated TreeNode.
+     * Returns a List of {@link TreeNode}s from the root to this node.
      *
      * @return
      */
