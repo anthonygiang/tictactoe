@@ -55,7 +55,7 @@ public class GameController {
     /**
      * Name of the AI player.
      */
-    public final String AI_NAME = "AI Player";
+    public final String AI_NAME = "AI";
 
     /**
      * Constructor takes in a GameView and sets up the game.
@@ -111,7 +111,7 @@ public class GameController {
                 playerTwo = new Player(AI_NAME, new CirclePiece());
             } else {
                 playerOne = new Player(AI_NAME, new CrossPiece());
-                playerTwo = new Player("Player One", new CirclePiece());
+                playerTwo = new Player("Player Two", new CirclePiece());
             }
         }
         // Set up the game with local players.
@@ -276,7 +276,7 @@ public class GameController {
         // Check if a player has won the game.
         if (gameBoardController.getWinConditionForPlayer(player) == true) {
             Context context = gameView.getAppCompatActivity().getApplicationContext();
-            String toastText = "Win!";
+            String toastText = player.getName() + " Wins!";
             int duration = Toast.LENGTH_SHORT;
 
             Toast toast = Toast.makeText(context, toastText, duration);
