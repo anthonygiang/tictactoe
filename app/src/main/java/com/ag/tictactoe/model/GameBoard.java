@@ -2,9 +2,13 @@ package com.ag.tictactoe.model;
 
 import android.util.Log;
 import android.view.View;
+import android.widget.Button;
 
+import java.util.Collection;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Class contains information for a game board.
@@ -35,7 +39,7 @@ public class GameBoard {
     /**
      * HashMap will map a Button id to a Tile.
      */
-    private HashMap<Integer, Tile> boardHashMap;
+    private Map<Integer, Tile> boardHashMap;
 
     /**
      * Default constructor initializes the 2D array of Tile.
@@ -71,22 +75,22 @@ public class GameBoard {
     /**
      * Constructor initializes the 2D array of Tile and maps the Button to the Tile.
      */
-    public GameBoard(List<View> buttons) {
+    public GameBoard(Collection<View> buttons) {
         tileMap = new Tile[NUMBER_OF_TILE_ROWS][NUMBER_OF_TILE_COLS];
         boardHashMap = new HashMap<Integer, Tile>();
-
-        int buttonCount = 0;
+        Iterator<View> iterator = buttons.iterator();
 
         // Reference the new Tile object to the board.
         for (int i = 0; i < NUMBER_OF_TILE_ROWS; i++) {
             for (int j = 0; j < NUMBER_OF_TILE_COLS; j++) {
                 tileMap[i][j] = new Tile(i, j);
                 // Map the Button id to the Tile.
-                if (buttonCount < buttons.size()) {
-                    boardHashMap.put(buttons.get(buttonCount).getId(), tileMap[i][j]);
-                    buttonCount++;
-                } else {
-                    Log.e(TAG, "Extra buttons detected in the game board.");
+                if(iterator.hasNext()) {
+                    View view = iterator.next();
+                    boardHashMap.put(view.getId(), tileMap[i][j]);
+                }
+                else {
+                    Log.e(TAG, "Not enough buttons detected in the game board.");
                 }
             }
         }
@@ -106,7 +110,7 @@ public class GameBoard {
      *
      * @return
      */
-    public HashMap<Integer, Tile> getBoardHashMap() {
+    public Map<Integer, Tile> getBoardHashMap() {
         return boardHashMap;
     }
 

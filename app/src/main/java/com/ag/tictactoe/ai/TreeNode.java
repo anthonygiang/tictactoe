@@ -1,7 +1,8 @@
 package com.ag.tictactoe.ai;
 
 import java.util.ArrayList;
-import java.util.List;
+import java.util.Collection;
+import java.util.LinkedList;
 
 /**
  * Generic class to represent a tree node in a Tree data structure.
@@ -16,7 +17,7 @@ public abstract class TreeNode {
     /**
      * List of all the children TreeNodes.
      */
-    protected List<TreeNode> children;
+    protected Collection<TreeNode> children;
 
     /**
      * Initialize values.
@@ -55,12 +56,12 @@ public abstract class TreeNode {
      *
      * @return
      */
-    public List<TreeNode> getNodePathFromRoot() {
+    public Collection<TreeNode> getNodePathFromRoot() {
         TreeNode iterator = this;
-        List<TreeNode> path = new ArrayList<TreeNode>();
+        LinkedList<TreeNode> path = new LinkedList<TreeNode>();
 
         while (iterator != null) {
-            path.add(0, iterator);
+            path.addFirst(iterator);
             iterator = iterator.parent;
         }
 

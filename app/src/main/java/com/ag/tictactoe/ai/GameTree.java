@@ -6,7 +6,7 @@ import com.ag.tictactoe.controller.PlayerController;
 import com.ag.tictactoe.model.Player;
 import com.ag.tictactoe.model.Tile;
 
-import java.util.List;
+import java.util.Collection;
 
 /**
  * Class will use depth first search and determine all possible outcomes for the game. This new
@@ -45,11 +45,11 @@ public class GameTree {
      */
     private GameTreeNode buildGameTree(GameTreeNode node, boolean isMaximizer, double alpha, double beta) {
 
-        GameController node_gc = node.getGameController();
-        GameBoardController node_gbc = node_gc.getGameBoardController();
-        PlayerController node_pc = node_gc.getPlayerController();
-        Player player = node_pc.getPlayerTurn();
-        List<Tile> emptyTileList = node_gbc.getEmptyTileList();
+        GameController gameController = node.getGameController();
+        GameBoardController gameBoardController = gameController.getGameBoardController();
+        PlayerController playerController = gameController.getPlayerController();
+        Player player = playerController.getPlayerTurn();
+        Collection<Tile> emptyTileList = gameBoardController.getEmptyTileList();
 
         // This will be the best GameTreeNode depending on if this is the
         // maximizer or minimizer.
@@ -59,86 +59,50 @@ public class GameTree {
         for (Tile tile : emptyTileList) {
 
             // Create a new child node.
-            GameTreeNode newNode = new GameTreeNode(node_gc);
-            node.addChildTreeNode(newNode);
+            GameTreeNode childNode = new GameTreeNode(gameController);
+            node.addChildTreeNode(childNode);
 
             // Get the GameBoardController for this child.
-            GameBoardController newNode_gbc = newNode.getGameController().getGameBoardController();
-            Tile newTile = newNode_gbc.getTileFromOtherGameBoardTile(tile);
+            GameBoardController childGameBoardController = childNode.getGameController().getGameBoardController();
+            Tile newTile = childGameBoardController.getTileFromOtherGameBoardTile(tile);
 
             // Set the new Tile on the child's GameBoardController.
-            newNode.setTileMove(player, newTile);
+            childNode.setTileMove(player, newTile);
 
             // Check if this was a winning move.
-            if (newNode_gbc.getWinConditionForPlayer(player)) {
-                newNode.setNodeMinMaxValue(isMaximizer);
-
-                if (bestGameTreeNode == null) {
-                    bestGameTreeNode = newNode;
-                } else if (isMaximizer) {
-                    if (bestGameTreeNode.getMinMaxValue() < newNode.getMinMaxValue()) {
-                        bestGameTreeNode = newNode;
-                    }
-                    if (bestGameTreeNode.getMinMaxValue() > alpha) {
-                        alpha = bestGameTreeNode.getMinMaxValue();
-                    }
-                } else {
-                    if (bestGameTreeNode.getMinMaxValue() > newNode.getMinMaxValue()) {
-                        bestGameTreeNode = newNode;
-                    }
-                    if (bestGameTreeNode.getMinMaxValue() < beta) {
-                        beta = bestGameTreeNode.getMinMaxValue();
-                    }
-                }
+            if (childGameBoardController.getWinConditionForPlayer(player)) {
+                childNode.setNodeMinMaxValue(isMaximizer);
             }
             // Check if this move was a tie.
-            else if (newNode_gbc.getStalemateCondition()) {
-                newNode.setTieNode();
-
-                if (bestGameTreeNode == null) {
-                    bestGameTreeNode = newNode;
-                } else if (isMaximizer) {
-                    if (bestGameTreeNode.getMinMaxValue() < newNode.getMinMaxValue()) {
-                        bestGameTreeNode = newNode;
-                    }
-                    if (bestGameTreeNode.getMinMaxValue() > alpha) {
-                        alpha = bestGameTreeNode.getMinMaxValue();
-                    }
-                } else {
-                    if (bestGameTreeNode.getMinMaxValue() > newNode.getMinMaxValue()) {
-                        bestGameTreeNode = newNode;
-                    }
-                    if (bestGameTreeNode.getMinMaxValue() < beta) {
-                        beta = bestGameTreeNode.getMinMaxValue();
-                    }
-                }
-
+            else if (childGameBoardController.getStalemateCondition()) {
+                childNode.setTieNode();
             }
             // Continue to play the game and populate the GameTree.
             else {
                 // Change the player's turn before creating a new Tree.
-                newNode.getGameController().getPlayerController().changeTurn();
+                childNode.getGameController().getPlayerController().changeTurn();
 
                 // Continue building the GameTree to determine the best minimax value.
                 // The maximizer becomes the minimizer and vice versa with every turn.
-                buildGameTree(newNode, !isMaximizer, alpha, beta);
+                buildGameTree(childNode, !isMaximizer, alpha, beta);
+            }
 
-                if (bestGameTreeNode == null) {
-                    bestGameTreeNode = newNode;
-                } else if (isMaximizer) {
-                    if (bestGameTreeNode.getMinMaxValue() < newNode.getMinMaxValue()) {
-                        bestGameTreeNode = newNode;
-                    }
-                    if (bestGameTreeNode.getMinMaxValue() > alpha) {
-                        alpha = bestGameTreeNode.getMinMaxValue();
-                    }
-                } else {
-                    if (bestGameTreeNode.getMinMaxValue() > newNode.getMinMaxValue()) {
-                        bestGameTreeNode = newNode;
-                    }
-                    if (bestGameTreeNode.getMinMaxValue() < beta) {
-                        beta = bestGameTreeNode.getMinMaxValue();
-                    }
+            // Determine the best move so far.
+            if (bestGameTreeNode == null) {
+                bestGameTreeNode = childNode;
+            } else if (isMaximizer) {
+                if (bestGameTreeNode.getMinMaxValue() < childNode.getMinMaxValue()) {
+                    bestGameTreeNode = childNode;
+                }
+                if (bestGameTreeNode.getMinMaxValue() > alpha) {
+                    alpha = bestGameTreeNode.getMinMaxValue();
+                }
+            } else {
+                if (bestGameTreeNode.getMinMaxValue() > childNode.getMinMaxValue()) {
+                    bestGameTreeNode = childNode;
+                }
+                if (bestGameTreeNode.getMinMaxValue() < beta) {
+                    beta = bestGameTreeNode.getMinMaxValue();
                 }
             }
 

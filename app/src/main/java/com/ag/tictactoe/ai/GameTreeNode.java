@@ -1,17 +1,25 @@
 package com.ag.tictactoe.ai;
 
+import android.util.Log;
+
 import com.ag.tictactoe.controller.GameController;
 import com.ag.tictactoe.model.Player;
 import com.ag.tictactoe.model.Tile;
 
+import java.util.Collection;
+import java.util.Iterator;
 import java.util.LinkedList;
-import java.util.List;
 import java.util.Queue;
 
 /**
  * Class represents a TreeNode inside of a GameTree. Each node represents a state of the game.
  */
 public class GameTreeNode extends TreeNode {
+
+    /**
+     * Tag for logging messages.
+     */
+    private static final String TAG = GameTreeNode.class.getName();
 
     /**
      * Undetermined min max value of this node.
@@ -75,8 +83,22 @@ public class GameTreeNode extends TreeNode {
      * @return
      */
     public GameTreeNode getNextNodeMove() {
-        List<TreeNode> path = this.getNodePathFromRoot();
-        return (GameTreeNode) path.get(1);
+        GameTreeNode node = null;
+        Collection<TreeNode> path = this.getNodePathFromRoot();
+        Iterator<TreeNode> iterator = path.iterator();
+
+        if (iterator.hasNext()) {
+            node = (GameTreeNode) iterator.next();
+        } else {
+            Log.e(TAG, "Unable to determine next move for AI.");
+        }
+        if (iterator.hasNext()) {
+            node = (GameTreeNode) iterator.next();
+        } else {
+            Log.e(TAG, "Unable to determine next move for AI.");
+        }
+
+        return node;
     }
 
     /**
@@ -124,9 +146,9 @@ public class GameTreeNode extends TreeNode {
      */
     public void setNodeMinMaxValue(boolean isMaximizer) {
         if (isMaximizer) {
-            minMaxValue = WIN + (1.0/this.getNodePathFromRoot().size());
+            minMaxValue = WIN + (1.0 / this.getNodePathFromRoot().size());
         } else {
-            minMaxValue = LOSE - (1 - 1.0/this.getNodePathFromRoot().size());
+            minMaxValue = LOSE - (1 - 1.0 / this.getNodePathFromRoot().size());
         }
     }
 
@@ -155,7 +177,7 @@ public class GameTreeNode extends TreeNode {
             while (!remainingNodes.isEmpty()) {
 
                 GameTreeNode currentNode = remainingNodes.remove();
-                List<TreeNode> children = currentNode.children;
+                Collection<TreeNode> children = currentNode.children;
 
                 // Return this node if it is a win and there are no children. This node
                 // is the fastest to a win.

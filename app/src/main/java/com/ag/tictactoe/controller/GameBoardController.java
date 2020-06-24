@@ -1,6 +1,5 @@
 package com.ag.tictactoe.controller;
 
-import android.content.Context;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageButton;
@@ -11,8 +10,8 @@ import com.ag.tictactoe.model.Player;
 import com.ag.tictactoe.model.Tile;
 
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
+import java.util.Collection;
+import java.util.Map;
 
 /**
  * Class manages the {@link GameBoard}.
@@ -38,13 +37,13 @@ public class GameBoardController {
         gameBoard = gb;
     }
 
-     /**
+    /**
      * Constructor does a deep copy of this class.
      *
      * @param gbc
      */
     public GameBoardController(GameBoardController gbc) {
-       gameBoard = new GameBoard(gbc.getGameBoard());
+        gameBoard = new GameBoard(gbc.getGameBoard());
     }
 
     /**
@@ -61,14 +60,14 @@ public class GameBoardController {
      *
      * @return
      */
-    public List<Tile> getEmptyTileList() {
+    public Collection<Tile> getEmptyTileList() {
 
-        List<Tile> emptyTileList = new ArrayList<Tile>();
+        Collection<Tile> emptyTileList = new ArrayList<Tile>();
 
         for (int i = 0; i < gameBoard.NUMBER_OF_TILE_ROWS; i++) {
             for (int j = 0; j < gameBoard.NUMBER_OF_TILE_COLS; j++) {
                 Tile tile = gameBoard.getTileMap()[i][j];
-                if(!tile.getIsOccupied()) {
+                if (!tile.getIsOccupied()) {
                     emptyTileList.add(tile);
                 }
             }
@@ -79,16 +78,16 @@ public class GameBoardController {
 
     /**
      * Sets the button referenced from each Tile.
+     *
      * @param buttons
      */
-    public void mapButtonsToTiles(List<View> buttons) {
+    public void mapButtonsToTiles(Collection<View> buttons) {
 
         for (View button : buttons) {
             Tile tile = getTileFromId(button.getId());
-            if(tile != null) {
+            if (tile != null) {
                 tile.setButton((ImageButton) button);
-            }
-            else {
+            } else {
                 Log.e(TAG, "Unable to find Tile from Button id.");
             }
         }
@@ -102,7 +101,7 @@ public class GameBoardController {
      */
     public Tile getTileFromId(int id) {
 
-        HashMap<Integer, Tile> boardHashMap = gameBoard.getBoardHashMap();
+        Map<Integer, Tile> boardHashMap = gameBoard.getBoardHashMap();
 
         if (boardHashMap.containsKey(id)) {
             return boardHashMap.get(id);
@@ -141,46 +140,46 @@ public class GameBoardController {
         GamePiece gamePiece = player.getGamePiece();
 
         // Check rows.
-        if(map[0][0].getGamePiece() == gamePiece &&
+        if (map[0][0].getGamePiece() == gamePiece &&
                 map[0][1].getGamePiece() == gamePiece &&
                 map[0][2].getGamePiece() == gamePiece) {
             return true;
         }
-        if(map[1][0].getGamePiece() == gamePiece &&
+        if (map[1][0].getGamePiece() == gamePiece &&
                 map[1][1].getGamePiece() == gamePiece &&
                 map[1][2].getGamePiece() == gamePiece) {
             return true;
         }
-        if(map[2][0].getGamePiece() == gamePiece &&
+        if (map[2][0].getGamePiece() == gamePiece &&
                 map[2][1].getGamePiece() == gamePiece &&
                 map[2][2].getGamePiece() == gamePiece) {
             return true;
         }
 
         // Check columns.
-        if(map[0][0].getGamePiece() == gamePiece &&
+        if (map[0][0].getGamePiece() == gamePiece &&
                 map[1][0].getGamePiece() == gamePiece &&
                 map[2][0].getGamePiece() == gamePiece) {
             return true;
         }
-        if(map[0][1].getGamePiece() == gamePiece &&
+        if (map[0][1].getGamePiece() == gamePiece &&
                 map[1][1].getGamePiece() == gamePiece &&
                 map[2][1].getGamePiece() == gamePiece) {
             return true;
         }
-        if(map[0][2].getGamePiece() == gamePiece &&
+        if (map[0][2].getGamePiece() == gamePiece &&
                 map[1][2].getGamePiece() == gamePiece &&
                 map[2][2].getGamePiece() == gamePiece) {
             return true;
         }
 
         // Check diagonals.
-        if(map[0][0].getGamePiece() == gamePiece &&
+        if (map[0][0].getGamePiece() == gamePiece &&
                 map[1][1].getGamePiece() == gamePiece &&
                 map[2][2].getGamePiece() == gamePiece) {
             return true;
         }
-        if(map[2][0].getGamePiece() == gamePiece &&
+        if (map[2][0].getGamePiece() == gamePiece &&
                 map[1][1].getGamePiece() == gamePiece &&
                 map[0][2].getGamePiece() == gamePiece) {
             return true;
@@ -197,16 +196,14 @@ public class GameBoardController {
         String gameBoardString = "Current Game Board:\n";
         for (int i = 0; i < gameBoard.NUMBER_OF_TILE_ROWS; i++) {
             for (int j = 0; j < gameBoard.NUMBER_OF_TILE_COLS; j++) {
-                if(gameBoard.getTileMap()[i][j].getGamePiece() == null) {
+                if (gameBoard.getTileMap()[i][j].getGamePiece() == null) {
                     gameBoardString += "[ ]";
-                }
-                else {
+                } else {
                     gameBoardString += "[";
                     String gamePiece = gameBoard.getTileMap()[i][j].getGamePiece().toString();
-                    if(gamePiece.contains("Cross")) {
+                    if (gamePiece.contains("Cross")) {
                         gameBoardString += "X";
-                    }
-                    else if(gamePiece.contains("Circle")) {
+                    } else if (gamePiece.contains("Circle")) {
                         gameBoardString += "O";
                     }
                     gameBoardString += "]";
@@ -228,7 +225,7 @@ public class GameBoardController {
 
         for (int i = 0; i < gameBoard.NUMBER_OF_TILE_ROWS; i++) {
             for (int j = 0; j < gameBoard.NUMBER_OF_TILE_COLS; j++) {
-                if(!map[i][j].getIsOccupied()) {
+                if (!map[i][j].getIsOccupied()) {
                     return false;
                 }
             }

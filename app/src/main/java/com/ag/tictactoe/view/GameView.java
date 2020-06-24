@@ -8,7 +8,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.ag.tictactoe.R;
 
-import java.util.List;
+import java.util.Collection;
 
 /**
  * Class manages the View for this game.
@@ -16,9 +16,9 @@ import java.util.List;
 public class GameView {
 
     /**
-     * List of views for the tiles in the game.
+     * Collection of views for the tiles in the game.
      */
-    private List<View> tiles;
+    private Collection<View> tiles;
 
     /**
      * View for restarting the game.
@@ -79,11 +79,11 @@ public class GameView {
     }
 
     /**
-     * Returns the list of tiles in the game.
+     * Returns the Collection of tiles in the game.
      *
      * @return
      */
-    public List<View> getTiles() {
+    public Collection<View> getTiles() {
         return tiles;
     }
 
