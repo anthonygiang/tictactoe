@@ -104,13 +104,12 @@ public class GameController {
         Player playerTwo = null;
 
         // Set up AI player.
-        if(aiEnabled) {
+        if (aiEnabled) {
             // Set which player goes first playing against AI.
-            if(moveFirstAgainstAI) {
+            if (moveFirstAgainstAI) {
                 playerOne = new Player("Player One", new CrossPiece());
                 playerTwo = new Player(AI_NAME, new CirclePiece());
-            }
-            else {
+            } else {
                 playerOne = new Player(AI_NAME, new CrossPiece());
                 playerTwo = new Player("Player One", new CirclePiece());
             }
@@ -140,23 +139,23 @@ public class GameController {
         // Prompt the user to decide who goes first in a game against the AI.
         AlertDialog.Builder turn = gameView.getTurn();
         turn.setNegativeButton(
-            "First",
-            new DialogInterface.OnClickListener() {
-                public void onClick(DialogInterface dialog, int id) {
-                    moveFirstAgainstAI = true;
-                    initializeGame(true);
-                    dialog.cancel();
-                }
-        });
+                "First",
+                new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        moveFirstAgainstAI = true;
+                        initializeGame(true);
+                        dialog.cancel();
+                    }
+                });
         turn.setPositiveButton(
-            "Second",
-            new DialogInterface.OnClickListener() {
-                public void onClick(DialogInterface dialog, int id) {
-                    moveFirstAgainstAI = false;
-                    initializeGame(true);
-                    dialog.cancel();
-                }
-        });
+                "Second",
+                new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        moveFirstAgainstAI = false;
+                        initializeGame(true);
+                        dialog.cancel();
+                    }
+                });
         AlertDialog alert1 = turn.create();
         alert1.show();
     }
@@ -172,7 +171,7 @@ public class GameController {
         GameTree gameTree = new GameTree(this);
         Tile bestTile = gameTree.getBestTileMove();
 
-        if(bestTile != null) {
+        if (bestTile != null) {
             Tile currentTile = gameBoardController.getTileFromOtherGameBoardTile(bestTile);
 
             if (currentTile != null) {
@@ -181,8 +180,7 @@ public class GameController {
                 ImageButton button = currentTile.getButton();
                 gameView.setButtonImage(button, player.getGamePiece().getDrawable());
             }
-        }
-        else {
+        } else {
             Log.e(TAG, "Unable to determine best move for AI.");
         }
 
@@ -246,6 +244,7 @@ public class GameController {
                                 }
                             }
                         }
+                        // Display message indicating to select an unoccupied tile.
                         else {
                             Context context = gameView.getAppCompatActivity().getApplicationContext();
                             String toastText = "Select another tile.";
