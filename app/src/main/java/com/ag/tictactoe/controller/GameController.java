@@ -1,6 +1,8 @@
 package com.ag.tictactoe.controller;
 
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -46,6 +48,11 @@ public class GameController {
     private boolean aiEnabled;
 
     /**
+     * Go first against the AI.
+     */
+    private boolean moveFirstAgainstAI;
+
+    /**
      * Name of the AI player.
      */
     public final String AI_NAME = "AI Player";
@@ -80,6 +87,12 @@ public class GameController {
         aiEnabled = ai;
         initializeControllers();
         setUpTiles();
+
+        // Make the AI move first if they have the first turn of the game.
+        if (aiEnabled == true && moveFirstAgainstAI == false) {
+            setAIMove();
+            checkEndGameConditions();
+        }
     }
 
     /**
@@ -87,12 +100,24 @@ public class GameController {
      */
     private void initializeControllers() {
 
-        Player playerOne = new Player("Player One", new CrossPiece());
-        Player playerTwo;
+        Player playerOne = null;
+        Player playerTwo = null;
+
+        // Set up AI player.
         if(aiEnabled) {
-            playerTwo = new Player(AI_NAME, new CirclePiece());
+            // Set which player goes first playing against AI.
+            if(moveFirstAgainstAI) {
+                playerOne = new Player("Player One", new CrossPiece());
+                playerTwo = new Player(AI_NAME, new CirclePiece());
+            }
+            else {
+                playerOne = new Player(AI_NAME, new CrossPiece());
+                playerTwo = new Player("Player One", new CirclePiece());
+            }
         }
+        // Set up the game with local players.
         else {
+            playerOne = new Player("Player One", new CrossPiece());
             playerTwo = new Player("Player Two", new CirclePiece());
         }
 
@@ -109,18 +134,31 @@ public class GameController {
      * Starts the game against AI.
      */
     private void startGameAgainstAI() {
-        initializeGame(true);
+
         aiEnabled = true;
 
-        // TODO implement.
-        // Make first move for now.
-        // Prompt user to ask who to go first.
-//        List<Player> players = playerController.getPlayers();
-//        Player aiPlayer = new Player("AI", new CirclePiece());
-//        players.remove(1);
-//        players.add(aiPlayer);
-
-
+        // Prompt the user to decide who goes first in a game against the AI.
+        AlertDialog.Builder turn = gameView.getTurn();
+        turn.setNegativeButton(
+            "First",
+            new DialogInterface.OnClickListener() {
+                public void onClick(DialogInterface dialog, int id) {
+                    moveFirstAgainstAI = true;
+                    initializeGame(true);
+                    dialog.cancel();
+                }
+        });
+        turn.setPositiveButton(
+            "Second",
+            new DialogInterface.OnClickListener() {
+                public void onClick(DialogInterface dialog, int id) {
+                    moveFirstAgainstAI = false;
+                    initializeGame(true);
+                    dialog.cancel();
+                }
+        });
+        AlertDialog alert1 = turn.create();
+        alert1.show();
     }
 
     /**

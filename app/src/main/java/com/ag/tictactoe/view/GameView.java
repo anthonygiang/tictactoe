@@ -1,5 +1,6 @@
 package com.ag.tictactoe.view;
 
+import android.app.AlertDialog;
 import android.view.View;
 import android.widget.ImageButton;
 
@@ -30,6 +31,11 @@ public class GameView {
     private View aiButton;
 
     /**
+     * Prompts user to decide who goes first in a game against the AI.
+     */
+    private AlertDialog.Builder turn;
+
+    /**
      * Context for the application.
      */
     private AppCompatActivity app;
@@ -46,6 +52,10 @@ public class GameView {
         tiles = app.findViewById(R.id.tiles).getTouchables();
         restart = app.findViewById(R.id.restart);
         aiButton = app.findViewById(R.id.ai);
+        turn = new AlertDialog.Builder(app);
+
+        turn.setMessage("Go First or Second against the AI?");
+        turn.setCancelable(true);
     }
 
     /**
@@ -93,6 +103,15 @@ public class GameView {
      */
     public View getAIButton() {
         return aiButton;
+    }
+
+    /**
+     * Returns prompt to decide who goes first in a game against the AI.
+     *
+     * @return
+     */
+    public AlertDialog.Builder getTurn() {
+        return turn;
     }
 
     /**
